@@ -3,16 +3,17 @@ package com.svalero.cinemav2.domain;
 import java.time.LocalDate;
 
 public class Movie {
-
+    private Long id;
     private String movieTitle;
     private String genre;
     private int durationMinutes;
     private double filmingLatitude;
     private double filmingLongitude;
-    private LocalDate releaseDate;
+    private String releaseDate;
     private boolean currentlyShowing;
 
-    public Movie(String movieTitle, String genre, int durationMinutes, double filmingLatitude, double filmingLongitude, LocalDate releaseDate, boolean currentlyShowing) {
+    public Movie(Long id, String movieTitle, String genre, int durationMinutes, double filmingLatitude, double filmingLongitude, String releaseDate, boolean currentlyShowing) {
+        this.id = id;
         this.movieTitle = movieTitle;
         this.genre = genre;
         this.durationMinutes = durationMinutes;
@@ -21,7 +22,13 @@ public class Movie {
         this.releaseDate = releaseDate;
         this.currentlyShowing = currentlyShowing;
     }
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getMovieTitle() {
         return movieTitle;
     }
@@ -62,11 +69,11 @@ public class Movie {
         this.filmingLongitude = filmingLongitude;
     }
 
-    public LocalDate getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
