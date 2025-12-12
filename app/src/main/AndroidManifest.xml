@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,10 +16,10 @@
         android:theme="@style/Theme.CinemaV2"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".MapActivity"
+            android:name=".view.MapActivityView"
             android:exported="false" />
         <activity
-            android:name=".RegisterMovie"
+            android:name=".view.RegisterMovieView"
             android:exported="false" />
         <activity
             android:name=".view.MovieListView"
