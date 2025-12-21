@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="map_types">
+        <item>Satelite</item>
+        <item>Calles</item>
+    </string-array>
+
+</resources>

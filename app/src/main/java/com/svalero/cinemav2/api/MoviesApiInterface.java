@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface MoviesApiInterface {
 
@@ -15,10 +16,12 @@ public interface MoviesApiInterface {
     @GET("movies")
     Call<List<Movie>> getMovies();
 
+    @GET("movies/{id}")
+    Call<Movie> getMovie(@Path("id") long id);
+
     @POST("movies")
     Call<Movie> addMovie(@Body Movie movie);
 
 
 
 }
-

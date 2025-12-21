@@ -1,10 +1,17 @@
 package com.svalero.cinemav2.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MoviesApi {
     public static MoviesApiInterface buildInstance() {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd")
+                .create();
+
         //el metodo que va permitir instanciar esa api, o esos metodos/interfaces java que llaman a la API
         //Le estoy diciendo que hay una API que esta escuchando en esa URL y que tiene las operaciones
         //definidas em MoviesApiInterface

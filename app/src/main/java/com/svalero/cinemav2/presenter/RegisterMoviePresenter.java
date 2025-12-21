@@ -23,6 +23,18 @@ public class RegisterMoviePresenter implements RegisterMovieContract.Presenter, 
             view.showErrorMessage("El titulo de la pelicula no puede estar vacio");
             return;
         }
+        if (movie.getGenre().isEmpty()){
+            view.showErrorMessage("El genero de la pelicula no puede estar vacio");
+            return;
+        }
+        if (movie.getDurationMinutes() <= 0){
+            view.showErrorMessage("El tiempo de duracion debe de ser al menos 1 minuto");
+            return;
+        }
+        if (movie.getReleaseDate() == null) {
+            view.showErrorMessage("La fecha de la pelicula no puede estar vacio");
+            return;
+        }
 
         model.registerMovie(movie, this);
 
@@ -30,7 +42,7 @@ public class RegisterMoviePresenter implements RegisterMovieContract.Presenter, 
 
     @Override
     public void onRegisterMovieSuccess(Movie registeredMovie) {
-        view.showSuccesMessage("Movie registrada correctamente con el identificador" + registeredMovie.getId());
+        view.showSuccesMessage("Movie registrada correctamente con el identificador " + registeredMovie.getId());
     }
 
     @Override

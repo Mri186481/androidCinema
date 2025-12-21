@@ -16,6 +16,12 @@
         android:theme="@style/Theme.CinemaV2"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.PreferencesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.MovieDetailActivityView"
+            android:exported="false" />
+        <activity
             android:name=".view.MapActivityView"
             android:exported="false" />
         <activity

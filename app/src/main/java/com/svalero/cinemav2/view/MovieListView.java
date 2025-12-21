@@ -7,21 +7,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.svalero.cinemav2.MapActivity;
 import com.svalero.cinemav2.R;
-import com.svalero.cinemav2.RegisterMovie;
 import com.svalero.cinemav2.adapter.MovieAdapter;
 import com.svalero.cinemav2.contract.MovieListContract;
 import com.svalero.cinemav2.domain.Movie;
 import com.svalero.cinemav2.presenter.MovieListPresenter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +32,8 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
     private MovieListContract.Presenter presenter;
 
 
-
+    //El metodo Oncreate es el metodo que segun el ciclo de vida se ejecuta cuando la
+    //Activity aparece por primera vez
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +47,11 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
         //Ahora le digo al presenter que carge las peliculas, el presenter llamara al model,
         //el model llamara a la API, recibira los datos, y en base a ir bien o no, llamara
         //al listener que es el presenter, que acabara llamando a la view, esta separado
-        presenter.loadMovies();
+        //Pero no la llamo aqui, mejor llamarlo en Onresume, porque la primera vez ques
+        //se ejecuta la activity, se ejecuta onCreate y onResume, las dos, asi que siempre
+        //se cargara la lista
+        //presenter.loadMovies();
+
         // Ahora  intancio la lista
         movieList = new ArrayList<>();
 
@@ -61,6 +62,15 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
 
         movieAdapter = new MovieAdapter(movieList);
         moviesView.setAdapter(movieAdapter);
+    }
+    // Cuando la activity vuelve del segundo plano al estar aparcada por otra se llama al metodo
+    //onResume, y al cargar la lista se refresca, por ejemplo, de una alta que acabamos de hacer
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //la Activity viene del segundo plano: Refrescar la lista por si ha habido algún cambio
+        movieList.clear();
+        presenter.loadMovies();
     }
     //Este metodo lo genero para la action bar a traves de generate override metthods y busco OnCreateOptions,
     //luego cambio la linea para inflar/generar la action_bar y devuelvo true para que el menu se pinte o presente
@@ -77,12 +87,24 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Aqui programo algo, como solo hay dos programo con un if
         if (item.getItemId() == R.id.action_map) {
-            Intent intent = new Intent(this, MapActivity.class);
+            Intent intent = new Intent(this, MapActivityView.class);
+            //Ahora le quiero pasar la lista de coches a la otra activity, para que me localice
+            //donde se rodo cada pelicula
+            //parcelable es una interface que cualquier objeto mio podria implemnentar para convertitlo en parcelable
+            //con lo cual se puede pasar de una activity a otra cualquier objeto de cualquier tipo
+            // Tengo qye covertir mi movie, en domain, en parcelable
+            //Nota si a un ArrayList le pasas un objeto coleccion lo convierte en ArrayList
+            intent.putParcelableArrayListExtra("movieList", new ArrayList<>(movieList));
+
+
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_register_movie) {
-            Intent intent = new Intent(this, RegisterMovie.class);
+            Intent intent = new Intent(this, RegisterMovieView.class);
             startActivity(intent);
             //Con esto inicio la otra activity en el metodo oncreate
+        } else if (item.getItemId() == R.id.action_preferences){
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
         }
         //En cualquier caso si he gestionado el caso devuelvo un true
         return true;
@@ -90,7 +112,7 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
     }
 
     public void registerMovie(View view) {
-        Intent intent = new Intent(this, RegisterMovie.class);
+        Intent intent = new Intent(this, RegisterMovieView.class);
         startActivity(intent);
     }
 

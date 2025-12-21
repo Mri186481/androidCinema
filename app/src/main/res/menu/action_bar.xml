@@ -12,4 +12,9 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="Añadir pelicula"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_preferences"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Preferencias"
+        app:showAsAction="always" />
 </menu>
