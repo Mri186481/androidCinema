@@ -1,13 +1,16 @@
 package com.svalero.cinemav2.view;
 
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,8 +36,6 @@ import java.util.Date;
 public class RegisterMovieView extends AppCompatActivity implements RegisterMovieContract.View,
         Style.OnStyleLoaded, OnMapClickListener {
 
-    //Tiene muy poca logica, no vamos a realizar un presenter nui un model, lo unico qeu hace es recoger los
-    //datos del mapa y de las casillas
 
     private RegisterMoviePresenter presenter;
 
@@ -77,11 +78,23 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
             //
             EditText durationMinutesEditText = findViewById((R.id.duration_minutes));
             int durationMinutes = Integer.parseInt(durationMinutesEditText.getText().toString());
-            //
+            // Inicio de proceso para validacion de fecha...Para comprobar que no esta vacia debo de trabajar con el presenter
             EditText releaseDateEditText = findViewById((R.id.release_date));
-            Date releaseDate = DateUtil.format(releaseDateEditText.getText().toString());
+            //
+            String releaseDateText = releaseDateEditText.getText().toString();
+            // Inicializar la variable de fecha a null
+            Date releaseDate = null;
 
-            Movie movie = new Movie(movieTitle,genre,durationMinutes,currentPoint.latitude(), currentPoint.longitude(),releaseDate,true);
+            //Si el texto no esta vacio no la parseo y envia un null al presenter que no le dejara seguir
+            if (!releaseDateText.isEmpty()) {
+                releaseDate = DateUtil.format(releaseDateEditText.getText().toString());
+            }
+            //Fin de validacion de la fecha
+
+            CheckBox currentlyShowingCheckBox = findViewById(R.id.currently_showing);
+            boolean currentlyShowing = currentlyShowingCheckBox.isChecked();
+
+            Movie movie = new Movie(movieTitle,genre,durationMinutes,currentPoint.latitude(), currentPoint.longitude(),releaseDate,currentlyShowing);
             presenter.registerMovie(movie);
 
         } catch (ParseException pe) {
@@ -96,7 +109,7 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
     @Override
     public void showErrorMessage(String message) {
         //Siempre lo primero que piden es el componente del interfaz al que queda ligado el SnackBar
-        Snackbar.make(findViewById((R.id.add_movie_button)), message, BaseTransientBottomBar.LENGTH_INDEFINITE).show();
+        Snackbar.make(findViewById((R.id.add_movie_button)), message, BaseTransientBottomBar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -107,7 +120,15 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
     //Inicializo el mapa..
     private void initializeMapView() {
         mapView = findViewById(R.id.registerMapView);
-        mapView.getMapboxMap().loadStyleUri(Style.SATELLITE_STREETS, this);
+        SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String mapType = myPreferences.getString("preference_map_type","Calles");
+        if (mapType.equals("Calles")){
+            //puedo incluso reutilizar la misma variable, y como son strings se aprovecha
+            mapType = Style.MAPBOX_STREETS;
+        } else if (mapType.equals("Satelite")) {
+            mapType = Style.SATELLITE;
+        }
+        mapView.getMapboxMap().loadStyleUri(mapType, this);
     }
     @Override
     public void onStyleLoaded(@NonNull Style style) {

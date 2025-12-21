@@ -1,5 +1,9 @@
 package com.svalero.cinemav2.adapter;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.svalero.cinemav2.R;
 import com.svalero.cinemav2.domain.Movie;
+import com.svalero.cinemav2.view.MovieDetailActivityView;
 
 import java.util.List;
 
@@ -50,6 +55,13 @@ public class MovieAdapter  extends RecyclerView .Adapter<MovieAdapter.MovieHolde
             movieTitle = itemView.findViewById(R.id.item_movie_title);
             genre = itemView.findViewById((R.id.item_genre));
             durationMinutes = itemView.findViewById((R.id.item_duration_minutes));
+
+            itemView.setOnClickListener(view -> {
+                Long movieId = movieList.get(getAdapterPosition()).getId();
+                Intent intent = new Intent(itemView.getContext(), MovieDetailActivityView.class);
+                intent.putExtra("movieId", movieId);
+                startActivity(itemView.getContext(), intent, null);
+            });
 
         }
     }

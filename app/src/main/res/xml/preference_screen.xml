@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory>
+        <PreferenceCategory>
+
+            <PreferenceCategory>
+
+            </PreferenceCategory>
+        </PreferenceCategory>
+        <PreferenceCategory android:title="Mapa">
+
+        </PreferenceCategory>
+    </PreferenceCategory>
+    <SwitchPreferenceCompat
+        app:key="notifications"
+        app:title="Habilitar notificaciones de la aplicación"/>
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/map_types"
+        android:entryValues="@array/map_types"
+        android:key="preference_map_type"
+        android:title="Vista de Mapa" />
+    <EditTextPreference
+        app:key="your_name"
+        app:title="Your name"
+        app:summary="Type your name"/>
+
+</PreferenceScreen>

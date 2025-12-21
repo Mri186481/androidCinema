@@ -1,19 +1,26 @@
 package com.svalero.cinemav2.domain;
 
-import java.time.LocalDate;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Movie {
+import androidx.annotation.NonNull;
+
+import java.time.LocalDate;
+import java.util.Date;
+//En principio, de serie, parece que retrofit no pueda trabajar con Localdate
+//Se arregla bien con date, pero hay que hacer unas perqueñas conversiones
+//y decirle a retrfit en la definicion de la api, como nos van a venir los datos
+public class Movie implements Parcelable {
     private Long id;
     private String movieTitle;
     private String genre;
     private int durationMinutes;
     private double filmingLatitude;
     private double filmingLongitude;
-    private String releaseDate;
+    private Date releaseDate;
     private boolean currentlyShowing;
 
-    public Movie(Long id, String movieTitle, String genre, int durationMinutes, double filmingLatitude, double filmingLongitude, String releaseDate, boolean currentlyShowing) {
-        this.id = id;
+    public Movie(String movieTitle,String genre, int durationMinutes, double filmingLatitude, double filmingLongitude, Date releaseDate, boolean currentlyShowing){
         this.movieTitle = movieTitle;
         this.genre = genre;
         this.durationMinutes = durationMinutes;
@@ -22,6 +29,34 @@ public class Movie {
         this.releaseDate = releaseDate;
         this.currentlyShowing = currentlyShowing;
     }
+
+
+    protected Movie(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readLong();
+        }
+        movieTitle = in.readString();
+        genre = in.readString();
+        durationMinutes = in.readInt();
+        filmingLatitude = in.readDouble();
+        filmingLongitude = in.readDouble();
+        currentlyShowing = in.readByte() != 0;
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
     public Long getId() {
         return id;
     }
@@ -69,11 +104,11 @@ public class Movie {
         this.filmingLongitude = filmingLongitude;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -83,5 +118,27 @@ public class Movie {
 
     public void setCurrentlyShowing(boolean currentlyShowing) {
         this.currentlyShowing = currentlyShowing;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(id);
+        }
+        dest.writeString(movieTitle);
+        dest.writeString(genre);
+        dest.writeInt(durationMinutes);
+        dest.writeDouble(filmingLatitude);
+        dest.writeDouble(filmingLongitude);
+        dest.writeByte((byte) (currentlyShowing ? 1 : 0));
     }
 }
