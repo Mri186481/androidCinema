@@ -3,11 +3,9 @@ package com.svalero.cinemav2.adapter;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.svalero.cinemav2.R;
 import com.svalero.cinemav2.domain.Movie;
-import com.svalero.cinemav2.view.MovieDetailActivityView;
+import com.svalero.cinemav2.view.MovieDetailView;
 
 import java.util.List;
 
@@ -58,7 +56,7 @@ public class MovieAdapter  extends RecyclerView .Adapter<MovieAdapter.MovieHolde
 
             itemView.setOnClickListener(view -> {
                 Long movieId = movieList.get(getAdapterPosition()).getId();
-                Intent intent = new Intent(itemView.getContext(), MovieDetailActivityView.class);
+                Intent intent = new Intent(itemView.getContext(), MovieDetailView.class);
                 intent.putExtra("movieId", movieId);
                 startActivity(itemView.getContext(), intent, null);
             });
