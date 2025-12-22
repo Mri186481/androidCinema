@@ -16,10 +16,13 @@
         android:theme="@style/Theme.CinemaV2"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.RegisterScreeningView"
+            android:exported="false" />
+        <activity
             android:name=".view.PreferencesActivity"
             android:exported="false" />
         <activity
-            android:name=".view.MovieDetailActivityView"
+            android:name=".view.MovieDetailView"
             android:exported="false" />
         <activity
             android:name=".view.MapActivityView"

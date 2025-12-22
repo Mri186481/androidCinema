@@ -9,10 +9,15 @@ public interface RegisterMovieContract {
         interface OnRegisterMovieListener{
             //misma lógica
             //on se puede interpretar como cuando, cuando el registro del coche va bien
+            //metodos para registro
             void onRegisterMovieSuccess(Movie registeredMovie);
             void onRegisterMovieError(String message);
+            //Metodos actualizacion
+            void onUpdateMovieSuccess(Movie updatedMovie);
+            void onUpdateMovieError(String message);
         }
         void registerMovie(Movie movie, OnRegisterMovieListener listener);
+        void updateMovie(Movie movie, OnRegisterMovieListener listener);
 
 
     }
@@ -21,6 +26,8 @@ public interface RegisterMovieContract {
         //void listMovies(List<Movie> movieList);
         void showErrorMessage(String message);
         void showSuccesMessage(String message);
+        //metodo para manejar el resultado de una actualizacion exitosa
+        void onUpdateMovieSuccess();
 
 
 
@@ -28,6 +35,8 @@ public interface RegisterMovieContract {
 
     interface Presenter {
         void registerMovie(Movie movie);
+        // Nuevo método para actualizar una película
+        void updateMovie(Movie movie);
 
     }
 }

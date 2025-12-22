@@ -7,6 +7,8 @@ import com.svalero.cinemav2.api.MoviesApiInterface;
 import com.svalero.cinemav2.contract.RegisterMovieContract;
 import com.svalero.cinemav2.domain.Movie;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,5 +48,43 @@ public class RegisterMovieModel implements RegisterMovieContract.Model {
             }
         });
 
+    }
+
+    @Override
+    public void updateMovie(Movie movie, OnRegisterMovieListener listener) {
+        MoviesApiInterface moviesApi = MoviesApi.buildInstance();
+        // Llamamos al método de actualización en la API
+        Call<Movie> callUpdateMovie = moviesApi.putMovie(movie.getId(), movie);
+
+        callUpdateMovie.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                switch (response.code()) {
+                    case 200:
+                    case 204: // 204 No Content es una respuesta común para actualizaciones exitosas
+                        // Llama al método del listener para indicar que la actualización fue exitosa
+                        listener.onUpdateMovieSuccess(response.body());
+                        break;
+                    case 400:
+                        listener.onUpdateMovieError("Error validando la petición de actualización: " + response.message());
+                        break;
+                    case 404:
+                        listener.onUpdateMovieError("Película no encontrada. No se pudo actualizar.");
+                        break;
+                    case 500:
+                        listener.onUpdateMovieError("Error interno en la API al actualizar: " + response.message());
+                        break;
+                    default:
+                        listener.onUpdateMovieError("Error al actualizar la película: " + response.message());
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
+                Log.e("API_FAILURE", "Error de la API al actualizar: " + t.getMessage(), t);
+                listener.onUpdateMovieError("No se puede conectar con el origen de los datos " + t.getMessage());
+            }
+        });
     }
 }

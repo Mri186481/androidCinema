@@ -6,8 +6,10 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface MoviesApiInterface {
@@ -21,6 +23,13 @@ public interface MoviesApiInterface {
 
     @POST("movies")
     Call<Movie> addMovie(@Body Movie movie);
+
+    @DELETE("movies/{id}")
+    Call<Void> deleteMovie(@Path("id") long id);
+
+    //
+    @PUT("movies/{id}")
+    Call<Movie> putMovie(@Path("id") long movieId, @Body Movie movie);
 
 
 

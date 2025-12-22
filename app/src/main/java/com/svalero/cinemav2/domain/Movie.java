@@ -42,6 +42,9 @@ public class Movie implements Parcelable {
         durationMinutes = in.readInt();
         filmingLatitude = in.readDouble();
         filmingLongitude = in.readDouble();
+        // Lee el long de la fecha y si no es -1L, crea un nuevo objeto Date
+        long releaseDateMillis = in.readLong();
+        releaseDate = releaseDateMillis == -1L ? null : new Date(releaseDateMillis);
         currentlyShowing = in.readByte() != 0;
     }
 
@@ -139,6 +142,8 @@ public class Movie implements Parcelable {
         dest.writeInt(durationMinutes);
         dest.writeDouble(filmingLatitude);
         dest.writeDouble(filmingLongitude);
+        // Escribe la fecha como un long (milisegundos) o -1L si es nula
+        dest.writeLong(releaseDate != null ? releaseDate.getTime() : -1L);
         dest.writeByte((byte) (currentlyShowing ? 1 : 0));
     }
 }

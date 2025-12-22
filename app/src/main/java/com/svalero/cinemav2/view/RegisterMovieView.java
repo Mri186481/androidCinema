@@ -1,12 +1,16 @@
 package com.svalero.cinemav2.view;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,13 +34,15 @@ import com.svalero.cinemav2.util.DateUtil;
 import com.svalero.cinemav2.util.MapUtil;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class RegisterMovieView extends AppCompatActivity implements RegisterMovieContract.View,
         Style.OnStyleLoaded, OnMapClickListener {
 
-
+    // Declarar aquí para que esté disponible en toda la clase
     private RegisterMoviePresenter presenter;
 
     private MapView mapView;
@@ -47,17 +53,63 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
     //para capturar el punto que selecciona el usuario, utilizo currentpoint
     private Point currentPoint;
 
+    private long movieId = -1;
+
+    private Button registerButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_movie);
         // le paso al presnter el view
         presenter = new RegisterMoviePresenter(this);
+        //Referencio el boton
+        registerButton = findViewById(R.id.add_movie_button);
 
         //Inicializaciomos tb todos los elemntos que vamos a necesitar con el mapa
         initializeMapView();
         pointAnnotationManager = MapUtil.initializePointAnnotationManager(mapView);
         initializeGesturesPlugin();
+
+        // Para reutilizar codigo para la edicion/ asi relleno los datos cuando es un update
+        Intent intent = getIntent();
+        if (intent != null) {
+            Movie movie = intent.getParcelableExtra("dataMovie");
+
+            if (movie != null) {
+                // Almacenamos el ID de la película que se está editando
+                this.movieId = movie.getId();
+                registerButton.setText("Modificar");
+                registerButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+
+                // Rellenamos los campos de la interfaz con los datos de la película
+                EditText movieTitleEditText = findViewById(R.id.movie_title);
+                movieTitleEditText.setText(movie.getMovieTitle());
+
+                EditText genreEditText = findViewById(R.id.genre);
+                genreEditText.setText(movie.getGenre());
+
+                EditText durationMinutesEditText = findViewById(R.id.duration_minutes);
+                durationMinutesEditText.setText(String.valueOf(movie.getDurationMinutes()));
+
+                EditText releaseDateEditText = findViewById(R.id.release_date);
+                // Asegúrate de que tu utilidad DateUtil pueda formatear la fecha a String
+                if (movie.getReleaseDate() != null) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                    String releaseDate = dateFormat.format(movie.getReleaseDate());
+                    releaseDateEditText.setText(releaseDate);
+                }
+
+                CheckBox currentlyShowingCheckBox = findViewById(R.id.currently_showing);
+                currentlyShowingCheckBox.setChecked(movie.isCurrentlyShowing());
+
+                // Actualizamos el punto en el mapa y dibujamos el marcador
+                currentPoint = Point.fromLngLat(movie.getFilmingLongitude(), movie.getFilmingLatitude());
+                addMarker(currentPoint.latitude(), currentPoint.longitude());
+            }
+        }
+
+
 
     }
 
@@ -95,16 +147,22 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
             boolean currentlyShowing = currentlyShowingCheckBox.isChecked();
 
             Movie movie = new Movie(movieTitle,genre,durationMinutes,currentPoint.latitude(), currentPoint.longitude(),releaseDate,currentlyShowing);
-            presenter.registerMovie(movie);
+
+            if (movieId != -1) {
+                // Modo edición
+                movie.setId(movieId);
+                presenter.updateMovie(movie);
+            } else {
+                // Modo nuevo registro
+                presenter.registerMovie(movie);
+            }
+
 
         } catch (ParseException pe) {
             pe.printStackTrace();
         }
 
-
-
     }
-
 
     @Override
     public void showErrorMessage(String message) {
@@ -119,7 +177,7 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
     }
     //Inicializo el mapa..
     private void initializeMapView() {
-        mapView = findViewById(R.id.registerMapView);
+        mapView = findViewById(R.id.detailMapView);
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String mapType = myPreferences.getString("preference_map_type","Calles");
         if (mapType.equals("Calles")){
@@ -138,7 +196,7 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
     private void initializeGesturesPlugin() {
         gesturesPlugin = GesturesUtils.getGestures(mapView);
         //Hacemos un listener para que se pueda hacer un click en el mapa
-        //al ponerle this me tiene que extender tb de una interface que coloco arriba
+        //al poner le this me tiene que extender tb de una interface que coloco arriba
         gesturesPlugin.addOnMapClickListener(this);
     }
     //cazo el punto, y no me interesa el texto como en la otra, asi que lo quito
@@ -164,4 +222,15 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
 
         return true;
     }
+    //Cuando la actualizacion se registre debo de enviar un resultado de vuelta para
+    //que se vea que la actualizacion se ha hecho correctamente, este metodo lo he puesto
+    //nuevo en el contract, en principio no hace falta pero queda mas consistente la app
+    public void onUpdateMovieSuccess() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("updatedMovieId", movieId);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+
 }
