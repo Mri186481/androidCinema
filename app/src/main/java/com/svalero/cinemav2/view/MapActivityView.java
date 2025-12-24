@@ -27,6 +27,7 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
     private ArrayList<Movie> movieList;
     private MapView mapView;
     private PointAnnotationManager pointAnnotationManager;
+    private static final String CHANNEL_ID = "notificationes";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,8 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
         }
         mapView.getMapboxMap().loadStyleUri(mapType, this);
         pointAnnotationManager = MapUtil.initializePointAnnotationManager(mapView);
+
+
 
     }
 

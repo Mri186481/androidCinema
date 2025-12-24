@@ -9,12 +9,10 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
-
 
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.MapView;
@@ -96,8 +94,8 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
         //guardamos el objeto movie en la variable de clase
         this.movie = movie;
         // Asignamos los datos a los TextViews correspondientes
-        ((TextView) findViewById(R.id.screening_movie_id)).setText("ID: " + movie.getId());
-        ((TextView) findViewById(R.id.screening_movie_title)).setText(movie.getMovieTitle());
+        ((TextView) findViewById(R.id.det_movie_id)).setText("ID: " + movie.getId());
+        ((TextView) findViewById(R.id.det_movie_title)).setText(movie.getMovieTitle());
         ((TextView) findViewById(R.id.det_genre)).setText("Género: " + movie.getGenre());
         ((TextView) findViewById(R.id.det_duration_minutes)).setText("Duración: " + movie.getDurationMinutes() + " minutos");
 
@@ -125,7 +123,7 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
     }
     private void viewMovie(Movie movie) {
 
-        addMarker(movie.getMovieTitle(), movie.getFilmingLatitude(), movie.getFilmingLongitude());
+            addMarker(movie.getMovieTitle(), movie.getFilmingLatitude(), movie.getFilmingLongitude());
 
     }
 
@@ -180,12 +178,12 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
                         (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
-    public void updateMovie(View view){
-        Intent intent = new Intent(this, RegisterMovieView.class);
-        intent.putExtra("dataMovie", movie);
-        startActivityForResult(intent, UPDATE_MOVIE_REQUEST);
+     public void updateMovie(View view){
+         Intent intent = new Intent(this, RegisterMovieView.class);
+         intent.putExtra("dataMovie", movie);
+         startActivityForResult(intent, UPDATE_MOVIE_REQUEST);
 
-    }
+     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -214,3 +212,18 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
 
 }
 
+
+// Ahora aqui llamaria a la api y visualizaria el coche, debere hacer un
+// model/view/presenter  para que pueda cargar la ficha igual que hizo la
+//MovieListView pero utilizando otros contratos y otro acceso a la API
+//Hago un movies/{moviesId} de la API
+//Y en vez de pasar una id para paso un objeto completo para pintarlo
+//Y aqui hacemos un boton de editar y un boton de borrar abajo y un boton de sesiones
+//que dara a un listado de sesiones de la pelicula y desde alli darla de baja o modificarla
+//en la pantalla principal hacemos tbn un boton de sesiones,  nos llevara a una pantalla de sesiones
+//general, podremos clicar en la que sea y verla y aya estaria. Esto tampoco hace falta
+//Aqui tambien implementare un diaologo a la hora de confirmar de borrar
+//o alguna opcion critica de la APP como modificar tb, eso es otro punto de la AA
+//LUEGO HAREMOS UN MENU DE PREFERENCIAS, ya con eso hay 5 ACtivities
+//Faltara implementar screeening y salen un monton, pero screeening no llevan mapa
+//Explorar el tema de imagenes, hacer fotos y manejar galeria
