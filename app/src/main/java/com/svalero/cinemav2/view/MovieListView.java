@@ -55,7 +55,7 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
         // Ahora  intancio la lista
         movieList = new ArrayList<>();
 
-        RecyclerView moviesView = findViewById(R.id.movies_view);
+        RecyclerView moviesView = findViewById(R.id.screenings_view);
         moviesView.hasFixedSize();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager((this));
         moviesView.setLayoutManager(linearLayoutManager);
@@ -98,8 +98,8 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
 
 
             startActivity(intent);
-        } else if (item.getItemId() == R.id.action_register_movie) {
-            Intent intent = new Intent(this, RegisterMovieView.class);
+        } else if (item.getItemId() == R.id.action_list_screenings) {
+            Intent intent = new Intent(this, ScreeningListView.class);
             startActivity(intent);
             //Con esto inicio la otra activity en el metodo oncreate
         } else if (item.getItemId() == R.id.action_preferences){

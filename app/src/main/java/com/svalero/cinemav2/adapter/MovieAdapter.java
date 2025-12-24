@@ -17,7 +17,7 @@ import com.svalero.cinemav2.view.MovieDetailView;
 
 import java.util.List;
 
-public class MovieAdapter  extends RecyclerView .Adapter<MovieAdapter.MovieHolder>{
+public class MovieAdapter extends RecyclerView .Adapter<MovieAdapter.MovieHolder>{
     private List<Movie> movieList;
     public MovieAdapter(List<Movie> movieList){
         this.movieList = movieList;
@@ -26,14 +26,14 @@ public class MovieAdapter  extends RecyclerView .Adapter<MovieAdapter.MovieHolde
 
     @NonNull
     @Override
-    public MovieAdapter.MovieHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MovieHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.moviesview_item, parent, false);
         return new MovieHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieAdapter.MovieHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MovieHolder holder, int position) {
         holder.movieTitle.setText(movieList.get(position).getMovieTitle());
         holder.genre.setText(movieList.get(position).getGenre());
         holder.durationMinutes.setText(String.valueOf(movieList.get(position).getDurationMinutes()));
@@ -50,9 +50,9 @@ public class MovieAdapter  extends RecyclerView .Adapter<MovieAdapter.MovieHolde
         private TextView durationMinutes;
         public MovieHolder(@NonNull View itemView) {
             super(itemView);
-            movieTitle = itemView.findViewById(R.id.item_movie_title);
-            genre = itemView.findViewById((R.id.item_genre));
-            durationMinutes = itemView.findViewById((R.id.item_duration_minutes));
+            movieTitle = itemView.findViewById(R.id.item_screening_movie_title);
+            genre = itemView.findViewById((R.id.item_screening_time));
+            durationMinutes = itemView.findViewById((R.id.item_screening_room_name));
 
             itemView.setOnClickListener(view -> {
                 Long movieId = movieList.get(getAdapterPosition()).getId();

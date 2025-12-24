@@ -7,8 +7,6 @@ import com.svalero.cinemav2.api.MoviesApiInterface;
 import com.svalero.cinemav2.contract.RegisterMovieContract;
 import com.svalero.cinemav2.domain.Movie;
 
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

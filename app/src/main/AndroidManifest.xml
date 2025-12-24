@@ -16,6 +16,12 @@
         android:theme="@style/Theme.CinemaV2"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.ScreeningDetailView"
+            android:exported="false" />
+        <activity
+            android:name=".view.ScreeningListView"
+            android:exported="false" />
+        <activity
             android:name=".view.RegisterScreeningView"
             android:exported="false" />
         <activity
