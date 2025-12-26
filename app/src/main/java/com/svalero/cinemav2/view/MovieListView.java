@@ -98,6 +98,10 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
 
 
             startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites) {
+            Intent intent = new Intent(this, FavoriteListView.class);
+            startActivity(intent);
+            //Con esto inicio la otra activity en el metodo oncreate
         } else if (item.getItemId() == R.id.action_list_screenings) {
             Intent intent = new Intent(this, ScreeningListView.class);
             startActivity(intent);

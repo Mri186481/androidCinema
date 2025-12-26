@@ -4,7 +4,7 @@ Android APP for Multimedia and Mobile Device Programming learning activity.
 Se ha implementado el patron MVP en el diseño de la aplicacion Cinemas.
 
 Para ejecutar la aplicacion basta con ejecutar la aplicacion en Android Studio con el emulador integrado. 
-Se han realizado todas las pruebas principalmente con el dispositivo que aparece en la lista como Pixel2XL y con la API 36"Baklava" o Android 16.
+Se han realizado principalmente las pruebas con el dispositivo Pixel2XL y con la API 36"Baklava" o Android 16.
 
 La aplicacion consume la Api diseñada en Acceso a Datos. Por motivo de especificaciones y envergadura del proyecto solo
 se han implementado dos clases de la Api cinemas. Las clases son Screenings(sesiones) y Movies(peliculas).

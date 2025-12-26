@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.FavoriteDetailView">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="1dp">
+
+        <EditText
+            android:id="@+id/det_bd_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Titulo"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/det_bd_genre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Genero"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/det_bd_duration_minutes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Duracion en Minutos"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/det_bd_release_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Fecha de estreno"
+            android:inputType="date" />
+
+        <CheckBox
+            android:id="@+id/det_bd_currently_showing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Currently Showing" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/update_screening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#4CAF50"
+
+                android:onClick="updateBdFavorite"
+                android:text="Modificar"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/delete_screening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:onClick="deleteBdFavorite"
+                android:text="Borrar"
+                android:textSize="10sp"
+                app:backgroundTint="#E91E63" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

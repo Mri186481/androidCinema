@@ -9,10 +9,15 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
 
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.MapView;
@@ -23,7 +28,9 @@ import com.svalero.cinemav2.R;
 import com.svalero.cinemav2.api.MoviesApi;
 import com.svalero.cinemav2.api.MoviesApiInterface;
 import com.svalero.cinemav2.contract.MovieDetailContract;
+import com.svalero.cinemav2.db.AppDatabase;
 import com.svalero.cinemav2.domain.Movie;
+import com.svalero.cinemav2.domain.MovieDb;
 import com.svalero.cinemav2.model.MovieDetailModel;
 import com.svalero.cinemav2.presenter.MovieDetailPresenter;
 import com.svalero.cinemav2.util.MapUtil;
@@ -49,7 +56,13 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_detail_movie);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Inicializamos el presentador y la vista se pasa a sí misma
         presenter = new MovieDetailPresenter(this, new MovieDetailModel());
@@ -184,6 +197,37 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
          startActivityForResult(intent, UPDATE_MOVIE_REQUEST);
 
      }
+
+    public void addFavorite(View view){
+
+        MovieDb movieDb = null;
+        if (movie == null) {
+            Toast.makeText(this, "Aún no se han cargado los datos de la película.", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            movieDb = new MovieDb();
+            movieDb.setMovieTitleDb(movie.getMovieTitle());
+            movieDb.setCurrentlyShowingDb(movie.isCurrentlyShowing());
+            movieDb.setDurationMinutesDb(movie.getDurationMinutes());
+            movieDb.setGenreDb(movie.getGenre());
+            movieDb.setFilmingLatitudeDb(movie.getFilmingLatitude());
+            movieDb.setFilmingLongitudeDb(movie.getFilmingLongitude());
+            //Fecha
+            SimpleDateFormat dateFormatDb = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String releaseDateDb = dateFormatDb.format(movie.getReleaseDate());
+            movieDb.setReleaseDateDb(releaseDateDb);
+        }
+
+        AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "moviedb.db")
+                .allowMainThreadQueries().build();
+        //con esta linea definimos la operacion sobre la BD, en este caso  lo añadimos
+        db.movieDbDao().addMovieDb(movieDb);
+        //
+        Toast.makeText(MovieDetailView.this, "Película añadida a favoritos correctamente", Toast.LENGTH_SHORT).show();
+        // Cerramos la vista de detalle una vez que la ha puesto en favoritos
+
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
