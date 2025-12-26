@@ -8,13 +8,18 @@
         android:title="Ver Mapa"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_register_movie"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="Añadir pelicula"
+        android:id="@+id/action_list_screenings"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="Listado de Sesiones"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_preferences"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="Preferencias"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_favorites"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="Favorites"
         app:showAsAction="always" />
 </menu>
