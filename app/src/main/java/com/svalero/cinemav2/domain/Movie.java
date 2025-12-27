@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalDate;
 import java.util.Date;
+
 //En principio, de serie, parece que retrofit no pueda trabajar con Localdate
 //Se arregla bien con date, pero hay que hacer unas perqueñas conversiones
 //y decirle a retrfit en la definicion de la api, como nos van a venir los datos
@@ -20,7 +20,7 @@ public class Movie implements Parcelable {
     private Date releaseDate;
     private boolean currentlyShowing;
 
-    public Movie(String movieTitle,String genre, int durationMinutes, double filmingLatitude, double filmingLongitude, Date releaseDate, boolean currentlyShowing){
+    public Movie(String movieTitle, String genre, int durationMinutes, double filmingLatitude, double filmingLongitude, Date releaseDate, boolean currentlyShowing){
         this.movieTitle = movieTitle;
         this.genre = genre;
         this.durationMinutes = durationMinutes;

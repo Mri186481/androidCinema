@@ -50,9 +50,10 @@ public class MovieAdapter extends RecyclerView .Adapter<MovieAdapter.MovieHolder
         private TextView durationMinutes;
         public MovieHolder(@NonNull View itemView) {
             super(itemView);
-            movieTitle = itemView.findViewById(R.id.item_screening_movie_title);
-            genre = itemView.findViewById((R.id.item_screening_time));
-            durationMinutes = itemView.findViewById((R.id.item_screening_room_name));
+            //Ojo cambiar nombres
+            movieTitle = itemView.findViewById(R.id.item_movie_title);
+            genre = itemView.findViewById((R.id.item_genre));
+            durationMinutes = itemView.findViewById((R.id.item_duration_minutes));
 
             itemView.setOnClickListener(view -> {
                 Long movieId = movieList.get(getAdapterPosition()).getId();

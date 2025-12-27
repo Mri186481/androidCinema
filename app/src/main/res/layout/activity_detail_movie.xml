@@ -55,7 +55,7 @@
             android:id="@+id/det_currently_showing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Currently Showing" />
+            android:text="@string/tx_currently_showing" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,7 +95,7 @@
             android:layout_weight="1"
             android:backgroundTint="#4CAF50"
             android:onClick="updateMovie"
-            android:text="Modificar"
+            android:text="@string/tx_modificar"
             android:textSize="10sp" />
 
         <Button
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="delMovie"
-            android:text="Borrar"
+            android:text="@string/tx_borrar"
             android:textSize="10sp"
             app:backgroundTint="#E91E63" />
 
@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:backgroundTint="#FF9800"
             android:onClick="registerScreening"
-            android:text="Registrar Sesion"
+            android:text="@string/tx_registrar_sesion"
             android:textSize="10sp" />
     </LinearLayout>
 
@@ -127,7 +127,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:contentDescription="Agregar a favoritos"
+        android:contentDescription="@string/tx_agregar_a_favoritos"
         android:onClick="addFavorite"
         android:tooltipText="Agregar a favoritos"
         app:backgroundTint="#FFC107"

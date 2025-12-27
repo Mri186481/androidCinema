@@ -1,6 +1,7 @@
 package com.svalero.cinemav2.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +31,8 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
     private List<Screening> screeningList;
     private ScreeningListContract.Presenter presenter;
 
+    private SharedPreferences myPreferences;
+
 
 
     @Override
@@ -36,6 +40,7 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_screening_list_view);
+        setTitle(getString(R.string.tl_screenings));
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -45,6 +50,9 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
         presenter = new ScreeningListPresenter(this);
 //        presenter.loadScreenings();
         screeningList = new ArrayList<>();
+
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 
         RecyclerView screeningsView = findViewById(R.id.screenings_view);
         screeningsView.hasFixedSize();
@@ -64,21 +72,25 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
         presenter.loadScreenings();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_bar, menu);
+        getMenuInflater().inflate(R.menu.action_bar2, menu);
         return true;
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Aqui programo algo, como solo hay dos programo con un if
 
-        if (item.getItemId() == R.id.action_list_screenings) {
+        if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
             startActivity(intent);
             //Con esto inicio la otra activity en el metodo oncreate
-        } else if (item.getItemId() == R.id.action_preferences){
+        } else if (item.getItemId() == R.id.action_preferences2){
             Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites2) {
+            Intent intent = new Intent(this, FavoriteListView.class);
             startActivity(intent);
         }
         //En cualquier caso si he gestionado el caso devuelvo un true
@@ -96,13 +108,17 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
 
     @Override
     public void showErrorMessage(String message) {
-        Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
 
     }
 
     @Override
     public void showSuccesMessage(String message) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
 
     }
 }

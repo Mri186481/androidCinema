@@ -17,8 +17,8 @@
             android:layout_width="224dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@mipmap/cartel_movie"
-            tools:srcCompat="@mipmap/cartel_movie" />
+            app:srcCompat="@mipmap/metraje"
+            tools:srcCompat="@mipmap/metraje" />
 
         <LinearLayout
             android:layout_width="match_parent"

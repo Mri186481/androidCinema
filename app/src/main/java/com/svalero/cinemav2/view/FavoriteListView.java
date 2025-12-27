@@ -1,10 +1,14 @@
 package com.svalero.cinemav2.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -33,7 +37,7 @@ public class FavoriteListView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_favorite_list_view);
-        setTitle("Lista de favoritos");
+        setTitle(getString(R.string.tl_lista_favoritos));
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,6 +59,30 @@ public class FavoriteListView extends AppCompatActivity {
         //la Activity viene del segundo plano: Refrescar la lista por si ha habido algún cambio
         favoriteList.clear();
         loadFavorites();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar2, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //Aqui programo algo, como solo hay dos programo con un if
+
+        if (item.getItemId() == R.id.action_list_screenings2) {
+            Intent intent = new Intent(this, ScreeningListView.class);
+            startActivity(intent);
+            //Con esto inicio la otra activity en el metodo oncreate
+        } else if (item.getItemId() == R.id.action_preferences2){
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites2) {
+            Intent intent = new Intent(this, FavoriteListView.class);
+            startActivity(intent);
+        }
+        //En cualquier caso si he gestionado el caso devuelvo un true
+        return true;
+
     }
     /*
     Una Mejora Importante: Evitar allowMainThreadQueries()

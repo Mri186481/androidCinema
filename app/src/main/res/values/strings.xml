@@ -1,6 +1,52 @@
 <resources>
     <string name="app_name">CinemaV2</string>
     <string name="lb_esta_seguro">¿Esta Seguro de que quiere borrar la pelicula?</string>
+    <string name="lb_esta_seguro_modificar">¿Esta Seguro de que quiere modificar la pelicula?</string>
+    <string name="lb_esta_seguro_sesion">¿Esta Seguro de que quiere borrar la sesion?</string>
+    <string name="lb_esta_seguro_modificar_sesion">¿Esta Seguro de que quiere modificar la sesion?</string>
     <string name="lb_si">Yes</string>
     <string name="lb_no">No</string>
+    <string name="movie_not_found_bd"> La película no se encontró en la BD.</string>
+    <string name="movie_not_valid_bd"> ID de película no válido en la BD.</string>
+    <string name="movie_not_load_bd"> No hay película cargada.</string>
+    <string name="number_must_be_valid"> La duración debe ser un número válido.</string>
+    <string name="update_favorite_right">  Película actualizada correctamente.</string>
+    <string name="delete_favorite_right">  Película eliminada correctamente.</string>
+    <string name="add_favorite_right">  Película añadida a favoritos correctamente.</string>
+    <string name="delete_screening_right">  Sesion eliminada correctamente.</string>
+    <string name="select_site"> Debes seleccionar una ubicación de filamcion principal.</string>
+    <string name="select_date"> Por favor, selecciona una fecha.</string>
+    <string name="tx_currently_showing">Actualmente en Exhibicion</string>
+    <string name="tx_modificar">Modificar</string>
+    <string name="tx_modificar_sesion">Modificar Sesion</string>
+    <string name="tx_borrar">Borrar</string>
+    <string name="tx_registrar_sesion">Registrar Sesion</string>
+    <string name="tx_agregar_a_favoritos">Agregar a favoritos</string>
+    <string name="tx_subtitled">Subtitulado</string>
+    <string name="tx_grabar">Añadir</string>
+    <string name="tx_titulo">Titulo</string>
+    <string name="tx_genero">Genero</string>
+    <string name="tx_duracion_en_minutos">Duracion en Minutos</string>
+    <string name="tx_duracion">Duracion</string>
+    <string name="tx_fecha_de_estreno">Fecha de Estreno</string>
+    <string name="tx_dia_hora_ejemplo">dia/hora. Ejemplo: 2025-07-30T23:45:00</string>
+    <string name="tx_precio_de_la_entrada">Precio de la entrada. Ejemplo: 8.2</string>
+    <string name="tx_vo_subtitulada">VO/Subtitulada</string>
+    <string name="tx_id_de_la_pelicula">Id de la Pelicula. Ejemplo: 1</string>
+    <string name="tx_id_de_la_sala">Id de la Sala. Ejemplo: 3</string>
+    <string name="tx_hora">Hora</string>
+    <string name="tl_detalle_favoritos">Detalle de Favoritos</string>
+    <string name="tl_lista_favoritos">Lista de Favoritos</string>
+    <string name="tl_mapa_filamciones">Mapa de Filmaciones</string>
+    <string name="tl_detalle_pelicula">Detalle de Movie</string>
+    <string name="tl_preferencias">Preferencias</string>
+    <string name="tl_add_movie">Añadir Movie</string>
+    <string name="tl_add_screening">Añadir Sesion</string>
+    <string name="tl_detalle_sesion">Detalle de Sesion</string>
+    <string name="tl_screenings">Sesiones</string>
+
+
+
+
+
 </resources>
