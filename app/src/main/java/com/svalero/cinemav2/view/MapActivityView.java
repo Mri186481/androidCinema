@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,7 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        setTitle(getString(R.string.tl_mapa_filamciones));
 
         Intent intent = getIntent();
         movieList = intent.getParcelableArrayListExtra("movieList");
@@ -50,6 +53,31 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
         pointAnnotationManager = MapUtil.initializePointAnnotationManager(mapView);
 
 
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar2, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //Aqui programo algo, como solo hay dos programo con un if
+
+        if (item.getItemId() == R.id.action_list_screenings2) {
+            Intent intent = new Intent(this, ScreeningListView.class);
+            startActivity(intent);
+            //Con esto inicio la otra activity en el metodo oncreate
+        } else if (item.getItemId() == R.id.action_preferences2){
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites2) {
+            Intent intent = new Intent(this, FavoriteListView.class);
+            startActivity(intent);
+        }
+        //En cualquier caso si he gestionado el caso devuelvo un true
+        return true;
 
     }
 

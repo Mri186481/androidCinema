@@ -1,6 +1,7 @@
 package com.svalero.cinemav2.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,10 +11,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import com.svalero.cinemav2.R;
@@ -25,17 +28,22 @@ import java.util.concurrent.Executors;
 
 public class FavoriteDetailView extends AppCompatActivity {
     private MovieDb movieDb;
+    private SharedPreferences myPreferences;
+    private String preferencesName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_favorite_detail_view);
+        setTitle(getString(R.string.tl_detalle_favoritos));
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferencesName = myPreferences.getString("your_name","");
         Intent intent = getIntent();
         Long IdDBFavorite = intent.getLongExtra("IdBd", -1);
         // Llamamos al presentador para que inicie la carga de datos
@@ -56,13 +64,17 @@ public class FavoriteDetailView extends AppCompatActivity {
                     if (this.movieDb != null) {
                         fillData(this.movieDb);
                     } else {
-                        Toast.makeText(this, "La película no se encontró en la BD.", Toast.LENGTH_SHORT).show();
+                        if (myPreferences.getBoolean("notifications", false)) {
+                            Toast.makeText(this, preferencesName + getString(R.string.movie_not_found_bd), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             });
         } else {
             // Si la ID es inválida, mostramos el Toast directamente
-            Toast.makeText(this, "ID de película no válido en la BD.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, preferencesName + getString(R.string.movie_not_valid_bd), Toast.LENGTH_SHORT).show();
+            }
         }
 
 
@@ -86,7 +98,9 @@ public class FavoriteDetailView extends AppCompatActivity {
 
     public void updateBdFavorite(View view) {
         if (this.movieDb == null) {
-            Toast.makeText(this, "No hay película cargada para actualizar.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, preferencesName + getString(R.string.movie_not_load_bd), Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
@@ -103,48 +117,81 @@ public class FavoriteDetailView extends AppCompatActivity {
         try {
             this.movieDb.setDurationMinutesDb(Integer.parseInt(durationMinutesEditText.getText().toString()));
         } catch (NumberFormatException nfe) {
-            Toast.makeText(this, "La duración debe ser un número válido.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, preferencesName + getString(R.string.number_must_be_valid), Toast.LENGTH_SHORT).show();
+            }
             return; // Detenemos la ejecución si el número no es válido
         }
         this.movieDb.setReleaseDateDb(releaseDateEditText.getText().toString());
         this.movieDb.setCurrentlyShowingDb(currentlyShowingCheckBox.isChecked());
 
         // 3. Ejecutar la actualización en un hilo secundario
-        Executor executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
 
-        executor.execute(() -> {
-            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "moviedb.db").build();
-            db.movieDbDao().updateMovieDb(this.movieDb);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.lb_esta_seguro_modificar)
+                .setPositiveButton(R.string.lb_si,
+                        (dialog, which) -> { // Expresión Lambda para simplificar
+                            // Modo edición
+                            Executor executor = Executors.newSingleThreadExecutor();
+                            Handler handler = new Handler(Looper.getMainLooper());
 
-            handler.post(() -> {
-                Toast.makeText(this, "Película actualizada correctamente.", Toast.LENGTH_SHORT).show();
-            });
-        });
+                            executor.execute(() -> {
+                                AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "moviedb.db").build();
+                                db.movieDbDao().updateMovieDb(this.movieDb);
+
+                                handler.post(() -> {
+                                    if (myPreferences.getBoolean("notifications", false)) {
+                                        Toast.makeText(this, preferencesName + getString(R.string.update_favorite_right), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            });
+
+                        })
+                .setNegativeButton(R.string.lb_no,
+                        (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+
+
     }
 
     /**
-     * Método para BORRAR la película de la base de datos.
-     * Este método se enlaza a un botón mediante el atributo android:onClick="deleteBdFavorite" en el XML.
+     * BORRAR la película de la base de datos.
+     * Esto  se enlaza a un botón mediante el atributo android:onClick="deleteBdFavorite" en el XML.
      */
     public void deleteBdFavorite(View view) {
         if (this.movieDb == null) {
-            Toast.makeText(this, "No hay película cargada para eliminar.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, preferencesName + getString(R.string.movie_not_load_bd), Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
-        Executor executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.lb_esta_seguro)
+                .setPositiveButton(R.string.lb_si,
+                        (dialog, which) -> { // Expresión Lambda para simplificar
+                            // Modo edición
+                            Executor executor = Executors.newSingleThreadExecutor();
+                            Handler handler = new Handler(Looper.getMainLooper());
 
-        executor.execute(() -> {
-            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "moviedb.db").build();
-            db.movieDbDao().deleteMovieDb(this.movieDb);
+                            executor.execute(() -> {
+                                AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "moviedb.db").build();
+                                db.movieDbDao().deleteMovieDb(this.movieDb);
 
-            handler.post(() -> {
-                Toast.makeText(this, "Película eliminada correctamente.", Toast.LENGTH_SHORT).show();
-                finish(); // Cierra la Activity y vuelve a la anterior
-            });
-        });
+                                handler.post(() -> {
+                                    if (myPreferences.getBoolean("notifications", false)) {
+                                        Toast.makeText(this, preferencesName + getString(R.string.delete_favorite_right), Toast.LENGTH_SHORT).show();
+                                    }
+                                    finish(); // Cierra la Activity y vuelve a la anterior
+                                });
+                            });
+
+                        })
+                .setNegativeButton(R.string.lb_no,
+                        (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+
+
     }
 
 

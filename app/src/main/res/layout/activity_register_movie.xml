@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#E91E63"
         android:onClick="register"
-        android:text="Añadir"
+        android:text="@string/tx_grabar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Titulo"
+            android:hint="@string/tx_titulo"
             android:inputType="text" />
 
         <EditText
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Genero"
+            android:hint="@string/tx_genero"
             android:inputType="text" />
 
         <EditText
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Duracion en Minutos"
+            android:hint="@string/tx_duracion_en_minutos"
             android:inputType="number" />
 
         <EditText
@@ -57,14 +57,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Fecha de estreno"
+            android:hint="@string/tx_fecha_de_estreno"
             android:inputType="date" />
 
         <CheckBox
             android:id="@+id/currently_showing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Currently Showing" />
+            android:text="@string/tx_currently_showing" />
 
     </LinearLayout>
 

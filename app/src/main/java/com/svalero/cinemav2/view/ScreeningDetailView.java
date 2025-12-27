@@ -1,18 +1,23 @@
 package com.svalero.cinemav2.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.PreferenceManager;
 
 import com.svalero.cinemav2.R;
 import com.svalero.cinemav2.api.ScreeningsApi;
@@ -34,11 +39,14 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
     private ScreeningDetailPresenter presenter;
     private static final int UPDATE_SCREENING_REQUEST = 1;
 
+    private SharedPreferences myPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_screening_detail_view);
+        setTitle(getString(R.string.tl_detalle_sesion));
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -46,6 +54,8 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
         });
 
         presenter = new ScreeningDetailPresenter(this, new ScreeningDetailModel());
+
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         Intent intent = getIntent();
         Long screeningId = intent.getLongExtra("screeningId", -1);
@@ -56,12 +66,30 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
         } else {
             showErrorMessage("ID de screening no válido.");
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar2, menu);
+        return true;
+    }
 
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //Aqui programo algo, como solo hay dos programo con un if
 
-
-
-
+        if (item.getItemId() == R.id.action_list_screenings2) {
+            Intent intent = new Intent(this, ScreeningListView.class);
+            startActivity(intent);
+            //Con esto inicio la otra activity en el metodo oncreate
+        } else if (item.getItemId() == R.id.action_preferences2){
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites2) {
+            Intent intent = new Intent(this, FavoriteListView.class);
+            startActivity(intent);
+        }
+        //En cualquier caso si he gestionado el caso devuelvo un true
+        return true;
 
     }
 
@@ -94,25 +122,31 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
 
     @Override
     public void showErrorMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     @Override
     public void showSuccessMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void delScreening(View view) {
         //Antes de mostrar el diálogo, comprobamos si tenemos una película cargada ---
+        String preferencesName = myPreferences.getString("your_name","");
         if (screening == null) {
-            Toast.makeText(this, "Aún no se han cargado los datos de la sesion.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, preferencesName + " Aún no se han cargado los datos de la sesion.", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.lb_esta_seguro)
+        builder.setMessage(R.string.lb_esta_seguro_sesion)
                 .setPositiveButton(R.string.lb_si,
                         (dialog, which) -> { // Expresión Lambda para simplificar
                             // Obtenemos el ID directamente de nuestra variable de clase
@@ -125,17 +159,23 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(ScreeningDetailView.this, "Sesion eliminada correctamente", Toast.LENGTH_SHORT).show();
+                                        if (myPreferences.getBoolean("notifications", false)) {
+                                            Toast.makeText(ScreeningDetailView.this, preferencesName + getString(R.string.delete_screening_right), Toast.LENGTH_SHORT).show();
+                                        }
                                         // Cerramos la vista de detalle porque la película ya no existe
                                         finish();
                                     } else {
-                                        Toast.makeText(ScreeningDetailView.this, "Error al eliminar. Código: " + response.code(), Toast.LENGTH_LONG).show();
+                                        if (myPreferences.getBoolean("notifications", false)) {
+                                            Toast.makeText(ScreeningDetailView.this, preferencesName + " Error al eliminar. Código: " + response.code(), Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<Void> call, Throwable t) {
-                                    Toast.makeText(ScreeningDetailView.this, "Fallo de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                    if (myPreferences.getBoolean("notifications", false)) {
+                                        Toast.makeText(ScreeningDetailView.this, preferencesName + " Fallo de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             });
                         })

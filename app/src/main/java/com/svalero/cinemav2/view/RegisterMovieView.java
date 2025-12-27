@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -55,10 +58,14 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
 
     private Button registerButton;
 
+    private SharedPreferences myPreferences;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_movie);
+        setTitle(getString(R.string.tl_add_movie));
         // le paso al presnter el view
         presenter = new RegisterMoviePresenter(this);
         //Referencio el boton
@@ -77,6 +84,7 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
             if (movie != null) {
                 // Almacenamos el ID de la película que se está editando
                 this.movieId = movie.getId();
+                setTitle("Modificar Movie");
                 registerButton.setText("Modificar");
                 registerButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
 
@@ -110,14 +118,45 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
 
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar2, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //Aqui programo algo, como solo hay dos programo con un if
+
+        if (item.getItemId() == R.id.action_list_screenings2) {
+            Intent intent = new Intent(this, ScreeningListView.class);
+            startActivity(intent);
+            //Con esto inicio la otra activity en el metodo oncreate
+        } else if (item.getItemId() == R.id.action_preferences2){
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites2) {
+            Intent intent = new Intent(this, FavoriteListView.class);
+            startActivity(intent);
+        }
+        //En cualquier caso si he gestionado el caso devuelvo un true
+        return true;
+
+    }
 
     //Tengo que asignar en el diseño un metodo al boton add_movie_buttom en el onclick
     public void register(View view){
         //recogo datos y llamo al presenter, nada mas, solo tareas de vista no puedo comprobar aqui..
         //en el presenter si que se pueden comprobar campos..
         if (currentPoint == null) {
-            Toast.makeText(this, "Debes seleccionar una ubicación de filamcion principal", Toast.LENGTH_LONG).show();
-            return;
+            if (myPreferences.getBoolean("notifications", false)) {
+                String preferencesName = myPreferences.getString("your_name","");
+                Toast.makeText(this, preferencesName + getString(R.string.select_site), Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                //Prueba para comprobar que las notificaciones estan desactivadas, de momento lo mantengo, para prueba de autoria
+                Toast.makeText(this, "Notifications are disabled", Toast.LENGTH_LONG).show();
+                return;
+            }
         }
         try {
             EditText movieTitleEditText = findViewById((R.id.movie_title));
@@ -147,9 +186,18 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
             Movie movie = new Movie(movieTitle,genre,durationMinutes,currentPoint.latitude(), currentPoint.longitude(),releaseDate,currentlyShowing);
 
             if (movieId != -1) {
-                // Modo edición
-                movie.setId(movieId);
-                presenter.updateMovie(movie);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.lb_esta_seguro_modificar)
+                        .setPositiveButton(R.string.lb_si,
+                                (dialog, which) -> { // Expresión Lambda para simplificar
+                                    // Modo edición
+                                    movie.setId(movieId);
+                                    presenter.updateMovie(movie);
+                                })
+                        .setNegativeButton(R.string.lb_no,
+                                (dialog, which) -> dialog.dismiss());
+                builder.create().show();
+
             } else {
                 // Modo nuevo registro
                 presenter.registerMovie(movie);
@@ -164,19 +212,25 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
 
     @Override
     public void showErrorMessage(String message) {
-        //Siempre lo primero que piden es el componente del interfaz al que queda ligado el SnackBar
-        Snackbar.make(findViewById((R.id.add_movie_button)), message, BaseTransientBottomBar.LENGTH_SHORT).show();
+        //Solo se muestra mensaje si se permiten notificaciones
+        if (myPreferences.getBoolean("notifications", false)) {
+            Snackbar.make(findViewById((R.id.add_movie_button)), message, BaseTransientBottomBar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void showSuccesMessage(String message) {
-        Snackbar.make(findViewById((R.id.add_movie_button)), message, BaseTransientBottomBar.LENGTH_SHORT).show();
+        //Solo se muestra mensaje si se permiten notificaciones
+        if (myPreferences.getBoolean("notifications", false)) {
+            Snackbar.make(findViewById((R.id.add_movie_button)), message, BaseTransientBottomBar.LENGTH_SHORT).show();
+        }
+
 
     }
     //Inicializo el mapa..
     private void initializeMapView() {
         mapView = findViewById(R.id.detailMapView);
-        SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String mapType = myPreferences.getString("preference_map_type","Calles");
         if (mapType.equals("Calles")){
             //puedo incluso reutilizar la misma variable, y como son strings se aprovecha

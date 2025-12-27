@@ -53,7 +53,7 @@
             android:id="@+id/det_screening_subtitled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subtitled" />
+            android:text="@string/tx_subtitled" />
     </LinearLayout>
 
 
@@ -75,7 +75,7 @@
             android:backgroundTint="#4CAF50"
 
             android:onClick="updateScreening"
-            android:text="Modificar"
+            android:text="@string/tx_modificar"
             android:textSize="10sp" />
 
         <Button
@@ -85,7 +85,7 @@
             android:layout_weight="1"
 
             android:onClick="delScreening"
-            android:text="Borrar"
+            android:text="@string/tx_borrar"
             android:textSize="10sp"
             app:backgroundTint="#E91E63" />
 

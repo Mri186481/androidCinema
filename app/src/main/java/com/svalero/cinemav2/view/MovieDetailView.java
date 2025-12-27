@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -51,6 +53,9 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
     // Código de solicitud para el resultado
     private static final int UPDATE_MOVIE_REQUEST = 1;
 
+    private SharedPreferences myPreferences;
+    private String preferencesName;
+
 
 
     @Override
@@ -58,6 +63,7 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_detail_movie);
+        setTitle(getString(R.string.tl_detalle_pelicula));
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -77,7 +83,8 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
 
         mapView = findViewById(R.id.detailMapView);
         //esto me permite obtener las preferencias de mi aplicacion
-        SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferencesName = myPreferences.getString("your_name","");
         String mapType = myPreferences.getString("preference_map_type","Calles");
         if (mapType.equals("Calles")){
             //puedo incluso reutilizar la misma variable, y como son strings se aprovecha
@@ -92,9 +99,35 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
         if (movieId != -1) {
             presenter.loadMovieDetail(movieId);
         } else {
-            showErrorMessage("ID de película no válido.");
+            //Aqui como ya tengo cargado el nombre lo uso, en otras clases no esta y por eso no lo he puesto
+            showErrorMessage(preferencesName + " ID de película no válido.");
         }
 
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar2, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //Aqui programo algo, como solo hay dos programo con un if
+
+        if (item.getItemId() == R.id.action_list_screenings2) {
+            Intent intent = new Intent(this, ScreeningListView.class);
+            startActivity(intent);
+            //Con esto inicio la otra activity en el metodo oncreate
+        } else if (item.getItemId() == R.id.action_preferences2){
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_favorites2) {
+            Intent intent = new Intent(this, FavoriteListView.class);
+            startActivity(intent);
+        }
+        //En cualquier caso si he gestionado el caso devuelvo un true
+        return true;
 
     }
 
@@ -109,13 +142,13 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
         // Asignamos los datos a los TextViews correspondientes
         ((TextView) findViewById(R.id.det_movie_id)).setText("ID: " + movie.getId());
         ((TextView) findViewById(R.id.det_movie_title)).setText(movie.getMovieTitle());
-        ((TextView) findViewById(R.id.det_genre)).setText("Género: " + movie.getGenre());
-        ((TextView) findViewById(R.id.det_duration_minutes)).setText("Duración: " + movie.getDurationMinutes() + " minutos");
+        ((TextView) findViewById(R.id.det_genre)).setText(getString(R.string.tx_genero) + ": " + movie.getGenre());
+        ((TextView) findViewById(R.id.det_duration_minutes)).setText(getString(R.string.tx_duracion) +": " + movie.getDurationMinutes() + " minutos");
 
         // Formateamos la fecha antes de mostrarla
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         String releaseDate = dateFormat.format(movie.getReleaseDate());
-        ((TextView) findViewById(R.id.det_release_date)).setText("Fecha de Estreno: " + releaseDate);
+        ((TextView) findViewById(R.id.det_release_date)).setText(getString(R.string.tx_fecha_de_estreno) + ": " + releaseDate);
 
         // Establecemos el estado del CheckBox
         ((CheckBox) findViewById(R.id.det_currently_showing)).setChecked(movie.isCurrentlyShowing());
@@ -126,12 +159,16 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
 
     @Override
     public void showErrorMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void showSuccessMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
 
     }
     private void viewMovie(Movie movie) {
@@ -155,7 +192,9 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
     public void delMovie(View view) {
         //Antes de mostrar el diálogo, comprobamos si tenemos una película cargada ---
         if (movie == null) {
-            Toast.makeText(this, "Aún no se han cargado los datos de la película.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, "Aún no se han cargado los datos de la película.", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
@@ -173,17 +212,23 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(MovieDetailView.this, "Película eliminada correctamente", Toast.LENGTH_SHORT).show();
+                                        if (myPreferences.getBoolean("notifications", false)) {
+                                            Toast.makeText(MovieDetailView.this, preferencesName + getString(R.string.delete_favorite_right), Toast.LENGTH_SHORT).show();
+                                        }
                                         // Cerramos la vista de detalle porque la película ya no existe
                                         finish();
                                     } else {
-                                        Toast.makeText(MovieDetailView.this, "Error al eliminar. Código: " + response.code(), Toast.LENGTH_LONG).show();
+                                        if (myPreferences.getBoolean("notifications", false)) {
+                                            Toast.makeText(MovieDetailView.this, preferencesName + " Error al eliminar. Código: " + response.code(), Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<Void> call, Throwable t) {
-                                    Toast.makeText(MovieDetailView.this, "Fallo de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                    if (myPreferences.getBoolean("notifications", false)) {
+                                        Toast.makeText(MovieDetailView.this, preferencesName + " Fallo de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             });
                         })
@@ -202,7 +247,9 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
 
         MovieDb movieDb = null;
         if (movie == null) {
-            Toast.makeText(this, "Aún no se han cargado los datos de la película.", Toast.LENGTH_SHORT).show();
+            if (myPreferences.getBoolean("notifications", false)) {
+                Toast.makeText(this, preferencesName + " Aún no se han cargado los datos de la película.", Toast.LENGTH_SHORT).show();
+            }
             return;
         } else {
             movieDb = new MovieDb();
@@ -223,9 +270,9 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
         //con esta linea definimos la operacion sobre la BD, en este caso  lo añadimos
         db.movieDbDao().addMovieDb(movieDb);
         //
-        Toast.makeText(MovieDetailView.this, "Película añadida a favoritos correctamente", Toast.LENGTH_SHORT).show();
-        // Cerramos la vista de detalle una vez que la ha puesto en favoritos
-
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(MovieDetailView.this, preferencesName + getString(R.string.add_favorite_right), Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -255,19 +302,3 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
 
 
 }
-
-
-// Ahora aqui llamaria a la api y visualizaria el coche, debere hacer un
-// model/view/presenter  para que pueda cargar la ficha igual que hizo la
-//MovieListView pero utilizando otros contratos y otro acceso a la API
-//Hago un movies/{moviesId} de la API
-//Y en vez de pasar una id para paso un objeto completo para pintarlo
-//Y aqui hacemos un boton de editar y un boton de borrar abajo y un boton de sesiones
-//que dara a un listado de sesiones de la pelicula y desde alli darla de baja o modificarla
-//en la pantalla principal hacemos tbn un boton de sesiones,  nos llevara a una pantalla de sesiones
-//general, podremos clicar en la que sea y verla y aya estaria. Esto tampoco hace falta
-//Aqui tambien implementare un diaologo a la hora de confirmar de borrar
-//o alguna opcion critica de la APP como modificar tb, eso es otro punto de la AA
-//LUEGO HAREMOS UN MENU DE PREFERENCIAS, ya con eso hay 5 ACtivities
-//Faltara implementar screeening y salen un monton, pero screeening no llevan mapa
-//Explorar el tema de imagenes, hacer fotos y manejar galeria

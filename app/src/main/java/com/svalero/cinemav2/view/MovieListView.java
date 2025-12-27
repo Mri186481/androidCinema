@@ -1,6 +1,7 @@
 package com.svalero.cinemav2.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +32,7 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
 
     //La view si que habla con el presenter aqui tengo que definir el presenter
     private MovieListContract.Presenter presenter;
+    private SharedPreferences myPreferences;
 
 
     //El metodo Oncreate es el metodo que segun el ciclo de vida se ejecuta cuando la
@@ -38,6 +41,7 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Movies");
 
         //Lo primero que hago es hablar con el presenter y me paso a mi mismo que soy la view
         presenter = new MovieListPresenter(this);
@@ -62,6 +66,8 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
 
         movieAdapter = new MovieAdapter(movieList);
         moviesView.setAdapter(movieAdapter);
+        // cargo preferencias, en este caso para activar o desactivar notificaciones
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
     // Cuando la activity vuelve del segundo plano al estar aparcada por otra se llama al metodo
     //onResume, y al cargar la lista se refresca, por ejemplo, de una alta que acabamos de hacer
@@ -132,12 +138,16 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
 
     @Override
     public void showErrorMessage(String message) {
-        Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
 
     }
 
     @Override
     public void showSuccesMessage(String message) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+        if (myPreferences.getBoolean("notifications", false)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
