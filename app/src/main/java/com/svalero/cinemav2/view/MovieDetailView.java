@@ -3,6 +3,7 @@ package com.svalero.cinemav2.view;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -181,6 +182,13 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
         PointAnnotationOptions marker = new PointAnnotationOptions()
                 .withIconImage(BitmapFactory.decodeResource(getResources(), R.mipmap.red_marker))
                 .withTextField(message)
+                // 1. CAMBIO DE COLOR DE TEXTO
+                .withTextColor(Color.RED)
+                // Opcional: Borde blanco para que se lea mejor sobre el mapa
+                .withTextHaloColor(Color.WHITE)
+                .withTextHaloWidth(2.0)
+                // 2. SOLUCIÓN ICONO NEGRO (Evitar tinte al seleccionar)
+                .withIconSize(1.0)
                 .withPoint(Point.fromLngLat(longitude, latitude));
         pointAnnotationManager.create(marker);
     }
@@ -263,6 +271,7 @@ public class MovieDetailView extends AppCompatActivity implements MovieDetailCon
             SimpleDateFormat dateFormatDb = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             String releaseDateDb = dateFormatDb.format(movie.getReleaseDate());
             movieDb.setReleaseDateDb(releaseDateDb);
+            //movieDb.setMovieImageDb(""); El campo se guardara como null en la base de datos
         }
 
         AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "moviedb.db")

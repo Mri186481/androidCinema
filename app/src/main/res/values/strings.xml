@@ -4,7 +4,7 @@
     <string name="lb_esta_seguro_modificar">¿Esta Seguro de que quiere modificar la pelicula?</string>
     <string name="lb_esta_seguro_sesion">¿Esta Seguro de que quiere borrar la sesion?</string>
     <string name="lb_esta_seguro_modificar_sesion">¿Esta Seguro de que quiere modificar la sesion?</string>
-    <string name="lb_si">Yes</string>
+    <string name="lb_si">Si</string>
     <string name="lb_no">No</string>
     <string name="movie_not_found_bd"> La película no se encontró en la BD.</string>
     <string name="movie_not_valid_bd"> ID de película no válido en la BD.</string>

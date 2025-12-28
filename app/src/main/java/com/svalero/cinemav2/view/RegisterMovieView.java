@@ -3,6 +3,7 @@ package com.svalero.cinemav2.view;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -255,6 +256,13 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
     private void addMarker(double latitude, double longitude) {
         PointAnnotationOptions marker = new PointAnnotationOptions()
                 .withIconImage(BitmapFactory.decodeResource(getResources(), R.mipmap.red_marker))
+                // 1. CAMBIO DE COLOR DE TEXTO
+                .withTextColor(Color.RED)
+                // Opcional: Borde blanco para que se lea mejor sobre el mapa
+                .withTextHaloColor(Color.WHITE)
+                .withTextHaloWidth(2.0)
+                // 2. SOLUCIÓN ICONO NEGRO (Evitar tinte al seleccionar)
+                .withIconSize(1.0)
                 .withPoint(Point.fromLngLat(longitude, latitude));
         pointAnnotationManager.create(marker);
     }
