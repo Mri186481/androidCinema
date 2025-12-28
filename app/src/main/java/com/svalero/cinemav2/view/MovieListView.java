@@ -94,7 +94,7 @@ public class MovieListView extends AppCompatActivity implements MovieListContrac
         //Aqui programo algo, como solo hay dos programo con un if
         if (item.getItemId() == R.id.action_map) {
             Intent intent = new Intent(this, MapActivityView.class);
-            //Ahora le quiero pasar la lista de coches a la otra activity, para que me localice
+            //Ahora le quiero pasar la lista de movies a la otra activity, para que me localice
             //donde se rodo cada pelicula
             //parcelable es una interface que cualquier objeto mio podria implemnentar para convertitlo en parcelable
             //con lo cual se puede pasar de una activity a otra cualquier objeto de cualquier tipo

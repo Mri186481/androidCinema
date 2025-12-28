@@ -22,13 +22,16 @@ public class MovieDb {
     private String releaseDateDb;
     @ColumnInfo
     private boolean currentlyShowingDb;
+    @ColumnInfo
+    private String movieImageDb;
+
 
     // Constructor sin parámetros (¡MUY IMPORTANTE para Room!)
     public MovieDb() {
 
     }
 
-    public MovieDb(String movieTitleDb, String genreDb, int durationMinutesDb, double filmingLatitudeDb, double filmingLongitudeDb, String releaseDateDb, boolean currentlyShowingDb){
+    public MovieDb(String movieTitleDb, String genreDb, int durationMinutesDb, double filmingLatitudeDb, double filmingLongitudeDb, String releaseDateDb, boolean currentlyShowingDb, String movieImageDb){
         this.movieTitleDb = movieTitleDb;
         this.genreDb = genreDb;
         this.durationMinutesDb = durationMinutesDb;
@@ -36,6 +39,7 @@ public class MovieDb {
         this.filmingLongitudeDb = filmingLongitudeDb;
         this.releaseDateDb = releaseDateDb;
         this.currentlyShowingDb = currentlyShowingDb;
+        this.movieImageDb = movieImageDb;
     }
 
     public Long getIdDb() {
@@ -99,6 +103,14 @@ public class MovieDb {
 
     public void setCurrentlyShowingDb(boolean currentlyShowingDb) {
         this.currentlyShowingDb = currentlyShowingDb;
+    }
+
+    public String getMovieImageDb() {
+        return movieImageDb;
+    }
+
+    public void setMovieImageDb(String movieImageDb) {
+        this.movieImageDb = movieImageDb;
     }
 
 

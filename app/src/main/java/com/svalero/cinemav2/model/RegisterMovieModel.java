@@ -22,7 +22,7 @@ public class RegisterMovieModel implements RegisterMovieContract.Model {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 switch (response.code()) {
-                    case 200:
+                    case 201:
                         listener.onRegisterMovieSuccess((response.body()));
                         break;
                     case 400:

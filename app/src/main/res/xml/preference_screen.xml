@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <PreferenceCategory>
         <PreferenceCategory>
 
@@ -13,9 +12,6 @@
 
         </PreferenceCategory>
     </PreferenceCategory>
-    <SwitchPreferenceCompat
-        app:key="notifications"
-        app:title="Habilitar notificaciones de la aplicación"/>
 
     <ListPreference
         android:defaultValue="1"
@@ -23,6 +19,13 @@
         android:entryValues="@array/map_types"
         android:key="preference_map_type"
         android:title="Vista de Mapa" />
+    <PreferenceCategory android:title="Notificaciones">
+
+    </PreferenceCategory>
+    <SwitchPreferenceCompat
+        app:key="notifications"
+        app:title="Habilitar notificaciones de la aplicación"/>
+
     <EditTextPreference
         app:key="your_name"
         app:title="Your name"
