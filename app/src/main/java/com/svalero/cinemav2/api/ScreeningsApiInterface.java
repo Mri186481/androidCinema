@@ -15,7 +15,6 @@ import retrofit2.http.Path;
 
 public interface ScreeningsApiInterface {
 
-    // son como los query methods del repository de spring-boot pero sin la barra /
     @GET("screenings")
     Call<List<Screening>> getScreenings();
 

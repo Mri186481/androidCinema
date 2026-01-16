@@ -15,9 +15,7 @@ public class RegisterScreeningModel implements RegisterScreeningContract.Model {
     @Override
     public void registerScreening(ScreeningIn screeningIn, OnRegisterScreeningListener listener) {
         ScreeningsApiInterface screeningsApi = ScreeningsApi.buildInstance();
-        //Ahora preparo la llamada
         Call<ScreeningIn> callRegisterScreening = screeningsApi.addScreening(screeningIn);
-        //Ahora HAGO la llamada, teclea new dentro del parentesis e intro
         callRegisterScreening.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ScreeningIn> call, Response<ScreeningIn> response) {
@@ -26,7 +24,6 @@ public class RegisterScreeningModel implements RegisterScreeningContract.Model {
                         listener.onRegisterScreeningSuccess((response.body()));
                         break;
                     case 400:
-                        //Hacer aqui lo de extraer los recursos de cadena para los literales
                         listener.onRegisterScreeningError("Error validando la peticion" + response.message());
                         break;
                     case 500:
@@ -37,10 +34,8 @@ public class RegisterScreeningModel implements RegisterScreeningContract.Model {
                         break;
                 }
             }
-
             @Override
             public void onFailure(Call<ScreeningIn> call, Throwable t) {
-                //Si va mal se ejecutara este otro, que es que me pasan el mensaje de error
                 Log.e("API_FAILURE", "Error de la API: " + t.getMessage(), t);
                 listener.onRegisterScreeningError("No se puede conectar con el origen de los datos " + t.getMessage());
             }
@@ -51,9 +46,7 @@ public class RegisterScreeningModel implements RegisterScreeningContract.Model {
     @Override
     public void updateScreening(ScreeningIn screeningIn, OnRegisterScreeningListener listener) {
         ScreeningsApiInterface screeningsApi = ScreeningsApi.buildInstance();
-        //Ahora preparo la llamada
         Call<ScreeningIn> callUpdateScreening = screeningsApi.putScreening(screeningIn.getId(),screeningIn);
-        //Ahora HAGO la llamada, teclea new dentro del parentesis e intro
         callUpdateScreening.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ScreeningIn> call, Response<ScreeningIn> response) {
@@ -65,7 +58,6 @@ public class RegisterScreeningModel implements RegisterScreeningContract.Model {
                         listener.onUpdateScreeningSuccess((response.body()));
                         break;
                     case 400:
-                        //Hacer aqui lo de extraer los recursos de cadena para los literales
                         listener.onUpdateScreeningError("Error validando la peticion" + response.message());
                         break;
                     case 404:
@@ -82,7 +74,6 @@ public class RegisterScreeningModel implements RegisterScreeningContract.Model {
 
             @Override
             public void onFailure(Call<ScreeningIn> call, Throwable t) {
-                //Si va mal se ejecutara este otro, que es que me pasan el mensaje de error
                 Log.e("API_FAILURE", "Error de la API: " + t.getMessage(), t);
                 listener.onUpdateScreeningError("No se puede conectar con el origen de los datos " + t.getMessage());
             }

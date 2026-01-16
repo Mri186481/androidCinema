@@ -24,8 +24,6 @@ import com.svalero.cinemav2.util.MapUtil;
 
 import java.util.ArrayList;
 
-//Tiene muy poca logica, no vamos a realizar un presenter nui un model, lo unico que hace es recoger los
-//datos del mapa y de las casillas
 public class MapActivityView extends AppCompatActivity implements Style.OnStyleLoaded {
     private ArrayList<Movie> movieList;
     private MapView mapView;
@@ -41,19 +39,15 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
         movieList = intent.getParcelableArrayListExtra("movieList");
 
         mapView = findViewById(R.id.mapView);
-        //esto me permite obtener las preferencias de mi aplicacion
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String mapType = myPreferences.getString("preference_map_type","Calles");
         if (mapType.equals("Calles")){
-            //puedo incluso reutilizar la misma variable, y como son strings se aprovecha
             mapType = Style.MAPBOX_STREETS;
         } else if (mapType.equals("Satelite")) {
             mapType = Style.SATELLITE;
         }
         mapView.getMapboxMap().loadStyleUri(mapType, this);
         pointAnnotationManager = MapUtil.initializePointAnnotationManager(mapView);
-
-
 
     }
 
@@ -64,7 +58,6 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //Aqui programo algo, como solo hay dos programo con un if
 
         if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
@@ -77,7 +70,6 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
             Intent intent = new Intent(this, FavoriteListView.class);
             startActivity(intent);
         }
-        //En cualquier caso si he gestionado el caso devuelvo un true
         return true;
 
     }
@@ -93,12 +85,9 @@ public class MapActivityView extends AppCompatActivity implements Style.OnStyleL
         PointAnnotationOptions marker = new PointAnnotationOptions()
                 .withIconImage(BitmapFactory.decodeResource(getResources(), R.mipmap.red_marker))
                 .withTextField(message)
-                // 1. CAMBIO DE COLOR DE TEXTO
                 .withTextColor(Color.RED)
-                // Opcional: Borde blanco para que se lea mejor sobre el mapa
                 .withTextHaloColor(Color.WHITE)
                 .withTextHaloWidth(2.0)
-                // 2. SOLUCIÓN ICONO NEGRO (Evitar tinte al seleccionar)
                 .withIconSize(1.0)
                 .withPoint(Point.fromLngLat(longitude, latitude));
         pointAnnotationManager.create(marker);

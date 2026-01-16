@@ -43,7 +43,6 @@ public class FavoriteDetailView extends AppCompatActivity {
 
     private  String imageUriDb = "";
 
-    // Constante para identificar nuestra solicitud de permiso
     private static final int READ_MEDIA_IMAGES_REQUEST_CODE = 101;
 
     @Override
@@ -61,13 +60,10 @@ public class FavoriteDetailView extends AppCompatActivity {
         preferencesName = myPreferences.getString("your_name","");
         Intent intent = getIntent();
         Long IdDBFavorite = intent.getLongExtra("IdBd", -1);
-        // Inicializo la variable de imagen
         movieImageView = findViewById(R.id.det_bd_movie_image);
-        // Esto asegura que siempre haya un icono visible.
         movieImageView.setImageResource(R.drawable.sin_imagen_bd);
 
         if (IdDBFavorite != -1) {
-            // Si la ID es válida, realizamos la consulta en un hilo secundario
             Executor executor = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
 
@@ -88,7 +84,7 @@ public class FavoriteDetailView extends AppCompatActivity {
                 });
             });
         } else {
-            // Si la ID es inválida, mostramos el Toast directamente
+            // Si la ID es inválida, mmuestro el Toast directamente
             if (myPreferences.getBoolean("notifications", false)) {
                 Toast.makeText(this, preferencesName + getString(R.string.movie_not_valid_bd), Toast.LENGTH_SHORT).show();
             }
@@ -112,36 +108,28 @@ public class FavoriteDetailView extends AppCompatActivity {
         CheckBox currentlyShowingCheckBox = findViewById(R.id.det_bd_currently_showing);
         currentlyShowingCheckBox.setChecked(movieDb.isCurrentlyShowingDb());
 
-        //Aqui
-        //ImageView movieImageEditText = findViewById(R.id.det_bd_movie_image);
-        // --- LÓGICA DE PERMISOS Y CARGA DE IMAGEN ---
         cargarImagen();
 
     }
+
     // Tratamiento de Imagenes
-
-
-
     private void cargarImagen() {
         if (movieDb == null) return;
 
-        //movieImageView = findViewById(R.id.det_bd_movie_image); No hace falta inicializarla, ya lo he hecho en el OnCreate
-        String imagePath = movieDb.getMovieImageDb(); // "content://..."
+        String imagePath = movieDb.getMovieImageDb();
 
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
-                // Convierte la cadena de vuelta a un objeto Uri
                 Uri imageUri = Uri.parse(imagePath);
-                // Carga la imagen directamente desde la Uri
                 movieImageView.setImageURI(imageUri);
             } catch (Exception e) {
                 //
                 Log.e("FavoriteDetailView", "Error al cargar la imagen con URI: " + imagePath, e);
                 // pongo una imagen por defecto si falla la carga
-                movieImageView.setImageResource(R.drawable.tron_identidad); // Cambia por imagen de error
+                movieImageView.setImageResource(R.drawable.tron_identidad);
             }
         } else {
-            // Si no hay una URI de imagen en la base de datos, mostramos la imagen por defecto
+            // Si no hay una URI de imagen en la base de datos, muestro la imagen por defecto
             movieImageView.setImageResource(R.drawable.tron_identidad);
         }
     }
@@ -152,12 +140,9 @@ public class FavoriteDetailView extends AppCompatActivity {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Uri image_uri = result.getData().getData();
                     if (image_uri != null) {
-                        // Tomo el permiso persistente
                         final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION;
                         getContentResolver().takePersistableUriPermission(image_uri, takeFlags);
-                        // Muestro Imagen
                         movieImageView.setImageURI(image_uri);
-                        //Guardo la URI como String para la BD
                         imageUriDb = image_uri.toString();
                     }
                 }
@@ -165,7 +150,7 @@ public class FavoriteDetailView extends AppCompatActivity {
     );
 
     public void selectImage(View view) {
-        //Obtencion de permisos persistentes cambio ACTION_PICK por ACTION_OPEN_DOCUMENT
+        //Obtencion de permisos persistentes
         Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         galleryActivityResultLauncher.launch(galleryIntent);
     }
@@ -178,14 +163,14 @@ public class FavoriteDetailView extends AppCompatActivity {
             return;
         }
 
-        // 1. Recoger los datos de los campos de la interfaz
+        //Recoger los datos de los campos de la interfaz
         EditText movieTitleEditText = findViewById(R.id.det_bd_movie_title);
         EditText genreEditText = findViewById(R.id.det_bd_genre);
         EditText durationMinutesEditText = findViewById(R.id.det_bd_duration_minutes);
         EditText releaseDateEditText = findViewById(R.id.det_bd_release_date);
         CheckBox currentlyShowingCheckBox = findViewById(R.id.det_bd_currently_showing);
 
-        // 2. Actualizar el objeto movieDb con los nuevos datos
+        //Actualizar el objeto movieDb con los nuevos datos
         this.movieDb.setMovieTitleDb(movieTitleEditText.getText().toString());
         this.movieDb.setGenreDb(genreEditText.getText().toString());
         try {
@@ -194,7 +179,7 @@ public class FavoriteDetailView extends AppCompatActivity {
             if (myPreferences.getBoolean("notifications", false)) {
                 Toast.makeText(this, preferencesName + getString(R.string.number_must_be_valid), Toast.LENGTH_SHORT).show();
             }
-            return; // Detenemos la ejecución si el número no es válido
+            return;
         }
         this.movieDb.setReleaseDateDb(releaseDateEditText.getText().toString());
         this.movieDb.setCurrentlyShowingDb(currentlyShowingCheckBox.isChecked());
@@ -202,7 +187,7 @@ public class FavoriteDetailView extends AppCompatActivity {
         this.movieDb.setMovieImageDb(imageUriDb);
 
 
-        // 3. Ejecutar la actualización en un hilo secundario
+        //Ejecutar la actualización en un hilo secundario
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.lb_esta_seguro_modificar)
@@ -231,7 +216,6 @@ public class FavoriteDetailView extends AppCompatActivity {
 
     }
 
-
     public void deleteBdFavorite(View view) {
         if (this.movieDb == null) {
             if (myPreferences.getBoolean("notifications", false)) {
@@ -243,8 +227,7 @@ public class FavoriteDetailView extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.lb_esta_seguro)
                 .setPositiveButton(R.string.lb_si,
-                        (dialog, which) -> { // Expresión Lambda para simplificar
-                            // Modo edición
+                        (dialog, which) -> {
                             Executor executor = Executors.newSingleThreadExecutor();
                             Handler handler = new Handler(Looper.getMainLooper());
 
@@ -256,10 +239,9 @@ public class FavoriteDetailView extends AppCompatActivity {
                                     if (myPreferences.getBoolean("notifications", false)) {
                                         Toast.makeText(this, preferencesName + getString(R.string.delete_favorite_right), Toast.LENGTH_SHORT).show();
                                     }
-                                    finish(); // Cierra la Activity y vuelve a la anterior
+                                    finish();
                                 });
                             });
-
                         })
                 .setNegativeButton(R.string.lb_no,
                         (dialog, which) -> dialog.dismiss());

@@ -28,7 +28,6 @@ public class MovieDb {
 
     // Constructor sin parámetros (¡MUY IMPORTANTE para Room!)
     public MovieDb() {
-
     }
 
     public MovieDb(String movieTitleDb, String genreDb, int durationMinutesDb, double filmingLatitudeDb, double filmingLongitudeDb, String releaseDateDb, boolean currentlyShowingDb, String movieImageDb){

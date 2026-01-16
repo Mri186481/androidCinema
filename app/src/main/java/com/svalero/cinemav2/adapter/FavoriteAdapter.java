@@ -53,7 +53,6 @@ public class FavoriteAdapter extends RecyclerView .Adapter<FavoriteAdapter.Favor
             movieTitle = itemView.findViewById(R.id.item_fav_movie_title);
             genre = itemView.findViewById((R.id.item_fav_genre));
             durationMinutes = itemView.findViewById((R.id.item_fav_duration_minutes));
-            //Cambiar esto por una pantalla propia para ver la informacion editarla y borrarla
             itemView.setOnClickListener(view -> {
                 Long IdBd = favoriteList.get(getAdapterPosition()).getIdDb();
                 Intent intent = new Intent(itemView.getContext(), FavoriteDetailView.class);

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 public class Screening implements Parcelable {
 
     private Long id;
-    private String screeningTime; // El campo de la fecha como String por problemas
+    private String screeningTime;
     private double ticketPrice;
     private boolean subtitled;
     private Long movieId;
@@ -36,7 +36,7 @@ public class Screening implements Parcelable {
         }
         screeningTime = in.readString();
         ticketPrice = in.readDouble();
-        subtitled = in.readByte() != 0; // Lee un byte y lo convierte a boolean
+        subtitled = in.readByte() != 0;
         if (in.readByte() == 0) {
             movieId = null;
         } else {
@@ -135,23 +135,21 @@ public class Screening implements Parcelable {
 
     @Override
     public int describeContents() {
-        return 0; // Generalmente se deja en 0
+        return 0;
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        // Escribimos los datos en el Parcel en el mismo orden que los leemos
         if (id == null) {
-            dest.writeByte((byte) 0); // Indica que el id es nulo
+            dest.writeByte((byte) 0);
         } else {
-            dest.writeByte((byte) 1); // Indica que el id tiene valor
+            dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
         dest.writeString(screeningTime);
         dest.writeDouble(ticketPrice);
-        dest.writeByte((byte) (subtitled ? 1 : 0)); // Escribe el boolean como un byte
+        dest.writeByte((byte) (subtitled ? 1 : 0));
 
-        // Escritura de los nuevos campos en el Parcel, manejando nulos
         if (movieId == null) {
             dest.writeByte((byte) 0);
         } else {

@@ -16,19 +16,16 @@ public class ScreeningDetailPresenter implements ScreeningDetailContract.Present
     public void loadScreeningDetail(long screeningId) {
 
         model.loadScreeningDetail(screeningId, this);
-
     }
 
     @Override
     public void onLoadScreeningDetailSuccess(Screening screening) {
         view.showScreeningDetail(screening);
         view.showSuccessMessage("Detalles de la sesion cargados correctamente.");
-
     }
 
     @Override
     public void onLoadScreeningDetailError(String message) {
         view.showErrorMessage(message);
-
     }
 }
