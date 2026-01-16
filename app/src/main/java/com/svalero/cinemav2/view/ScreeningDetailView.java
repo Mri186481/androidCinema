@@ -60,7 +60,6 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
         Intent intent = getIntent();
         Long screeningId = intent.getLongExtra("screeningId", -1);
 
-        // Llamamos al presentador para que inicie la carga de datos
         if (screeningId != -1) {
             presenter.loadScreeningDetail(screeningId);
         } else {
@@ -75,7 +74,6 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //Aqui programo algo, como solo hay dos programo con un if
 
         if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
@@ -88,7 +86,6 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
             Intent intent = new Intent(this, FavoriteListView.class);
             startActivity(intent);
         }
-        //En cualquier caso si he gestionado el caso devuelvo un true
         return true;
 
     }
@@ -96,28 +93,21 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
     @Override
     public void showScreeningDetail(Screening screening) {
         this.screening = screening;
-        // Asignamos los datos a los TextViews correspondientes
         ((TextView) findViewById(R.id.det_screening_id)).setText("ID: " + screening.getId());
         ((TextView) findViewById(R.id.det_screening_movie_title)).setText(screening.getMovieTitle());
-        //Formateo de fecha
         String screeningTimeString = screening.getScreeningTime();
         String timePart1 = screeningTimeString;
         String timePart2 = screeningTimeString;
         LocalDateTime screeningDateTime = DateTimeUtil.stringToLocalDateTime(screeningTimeString);
-        // 3. Ahora puedes trabajar con él de forma segura
         if (screeningDateTime != null) {
             timePart1 = String.valueOf(screeningDateTime.getDayOfMonth()) + "-" + String.valueOf(screeningDateTime.getMonth()) + "-" + String.valueOf(screeningDateTime.getYear());
             timePart2 =  screeningDateTime.getHour() + ":" + screeningDateTime.getMinute();
         }
 
-
         ((TextView) findViewById(R.id.det_screening_time_part1)).setText(timePart1);
         ((TextView) findViewById(R.id.det_screening_time_part2)).setText(timePart2);
         ((TextView) findViewById(R.id.det_screening_ticket_price)).setText(String.valueOf(screening.getTicketPrice()));
-
-        // Establecemos el estado del CheckBox
         ((CheckBox) findViewById(R.id.det_screening_subtitled)).setChecked(screening.isSubtitled());
-
     }
 
     @Override
@@ -125,7 +115,6 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
         if (myPreferences.getBoolean("notifications", false)) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -136,7 +125,6 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
     }
 
     public void delScreening(View view) {
-        //Antes de mostrar el diálogo, comprobamos si tenemos una película cargada ---
         String preferencesName = myPreferences.getString("your_name","");
         if (screening == null) {
             if (myPreferences.getBoolean("notifications", false)) {
@@ -148,8 +136,7 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.lb_esta_seguro_sesion)
                 .setPositiveButton(R.string.lb_si,
-                        (dialog, which) -> { // Expresión Lambda para simplificar
-                            // Obtenemos el ID directamente de nuestra variable de clase
+                        (dialog, which) -> {
                             long screeningIdToDelete = this.screening.getId();
 
                             ScreeningsApiInterface apiInterface = ScreeningsApi.buildInstance();
@@ -162,7 +149,6 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
                                         if (myPreferences.getBoolean("notifications", false)) {
                                             Toast.makeText(ScreeningDetailView.this, preferencesName + getString(R.string.delete_screening_right), Toast.LENGTH_SHORT).show();
                                         }
-                                        // Cerramos la vista de detalle porque la película ya no existe
                                         finish();
                                     } else {
                                         if (myPreferences.getBoolean("notifications", false)) {
@@ -194,17 +180,11 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Verificamos si la respuesta viene de RegisterMovieView y la operación fue exitosa
         if (requestCode == UPDATE_SCREENING_REQUEST && resultCode == RESULT_OK) {
-            // Obtenemos el ID de la película que se actualizó
             Long updatedScreeningId = data.getLongExtra("updatedScreeningId", -1);
             if (updatedScreeningId != -1) {
-                // Recargamos los datos de la película para actualizar la vista
                 presenter.loadScreeningDetail(updatedScreeningId);
             }
         }
     }
-
-
 }

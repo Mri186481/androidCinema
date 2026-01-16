@@ -14,7 +14,6 @@ import retrofit2.http.Path;
 
 public interface MoviesApiInterface {
 
-    // son como los query methods del repository de spring-boot pero sin la barra /
     @GET("movies")
     Call<List<Movie>> getMovies();
 

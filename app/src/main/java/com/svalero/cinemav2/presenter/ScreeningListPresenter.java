@@ -12,9 +12,7 @@ public class ScreeningListPresenter implements ScreeningListContract.Presenter, 
     private ScreeningListContract.Model model;
 
     public ScreeningListPresenter(ScreeningListContract.View view){
-        //La vista viene creada por la propia activity aqui se la paso, y se la paso aqui como parametro
         this.view = view;
-        //El model como no existe me lo creo
         model = new ScreeningListModel();
     }
     @Override
@@ -25,12 +23,10 @@ public class ScreeningListPresenter implements ScreeningListContract.Presenter, 
     @Override
     public void onLoadScreeningsSuccess(List<Screening> screeningList) {
         view.listScreenings(screeningList);
-
     }
 
     @Override
     public void onLoadScreeningsError(String message) {
         view.showErrorMessage(message);
-
     }
 }

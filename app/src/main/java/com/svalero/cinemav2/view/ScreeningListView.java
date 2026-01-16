@@ -48,7 +48,6 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
         });
 
         presenter = new ScreeningListPresenter(this);
-//        presenter.loadScreenings();
         screeningList = new ArrayList<>();
 
         myPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -67,7 +66,6 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
     @Override
     protected void onResume() {
         super.onResume();
-        //la Activity viene del segundo plano: Refrescar la lista por si ha habido algún cambio
         screeningList.clear();
         presenter.loadScreenings();
     }
@@ -80,7 +78,6 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //Aqui programo algo, como solo hay dos programo con un if
 
         if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
@@ -93,15 +90,12 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
             Intent intent = new Intent(this, FavoriteListView.class);
             startActivity(intent);
         }
-        //En cualquier caso si he gestionado el caso devuelvo un true
         return true;
 
     }
     @Override
     public void listScreenings(List<Screening> screeningList) {
-        //en mi lista de aqui privada añado lo que viene ahora que viene del model
         this.screeningList.addAll(screeningList);
-        //le paso la lista a mi adapter para que la pinte
         screeningAdapter.notifyDataSetChanged();
 
     }
@@ -111,14 +105,11 @@ public class ScreeningListView extends AppCompatActivity implements ScreeningLis
         if (myPreferences.getBoolean("notifications", false)) {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
-
     }
-
     @Override
     public void showSuccesMessage(String message) {
         if (myPreferences.getBoolean("notifications", false)) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
-
     }
 }

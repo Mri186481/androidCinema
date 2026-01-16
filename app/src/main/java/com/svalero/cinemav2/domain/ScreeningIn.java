@@ -5,11 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-/**
- * Clase modelo para representar los datos de entrada al crear o actualizar un Screening.
- * Se utiliza para las peticiones POST y PUT a la API.
- * Implementa Parcelable para poder pasarla entre componentes de Android.
- */
 public class ScreeningIn implements Parcelable {
     private Long id;
     private String screeningTime;
@@ -125,9 +120,9 @@ public class ScreeningIn implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         if (id == null) {
-            dest.writeByte((byte) 0); // Indica que el id es nulo
+            dest.writeByte((byte) 0);
         } else {
-            dest.writeByte((byte) 1); // Indica que el id tiene valor
+            dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
         dest.writeString(screeningTime);

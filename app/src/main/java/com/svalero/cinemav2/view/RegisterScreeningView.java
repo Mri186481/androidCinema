@@ -39,14 +39,10 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
     private Button registerScreeningButton;
     private Long SmovieId;
     private SharedPreferences myPreferences;
-
-    // --- NUEVAS VARIABLES PARA GUARDAR FECHA Y HORA ---
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
     private boolean isDateSelected = false;
 
-    // Referencia al EditText antiguo para tus pruebas
     private EditText screeningTimeEditTextLegacy;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +60,11 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
         presenter = new RegisterScreeningPresenter(this);
         registerScreeningButton = findViewById(R.id.add_screening_button);
 
-        // --- INICIALIZACIÓN DE COMPONENTES DE FECHA Y HORA ---
         CalendarView calendarView = findViewById(R.id.screening_add_day);
         EditText screeningHourEditText = findViewById(R.id.screening_add_hour);
 
-        // Guardo Formato la referencia al campo antiguo para las pruebas
         screeningTimeEditTextLegacy = findViewById(R.id.screening_add_time);
 
-        // Inicializo la fecha y hora con los valores actuales por defecto
         Calendar now = Calendar.getInstance();
         selectedYear = now.get(Calendar.YEAR);
         selectedMonth = now.get(Calendar.MONTH);
@@ -79,9 +72,8 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
         selectedHour = now.get(Calendar.HOUR_OF_DAY);
         selectedMinute = now.get(Calendar.MINUTE);
         isDateSelected = true;
-        updateLegacyField(); // Actualizo el campo antiguo con la hora actual
+        updateLegacyField();
 
-        // 1. Listener para el CalendarView para capturar la FECHA
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
@@ -89,23 +81,20 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
                 selectedMonth = month;
                 selectedDay = dayOfMonth;
                 isDateSelected = true;
-                updateLegacyField(); // Actualizo el campo antiguo
+                updateLegacyField();
             }
         });
 
-        //El nuevo EditText de la hora hago que no sea editable por teclado
         screeningHourEditText.setFocusable(false);
         screeningHourEditText.setClickable(true);
 
-        // 2. Listener para el EditText de la hora para abrir el TimePickerDialog
         screeningHourEditText.setOnClickListener(v -> {
             TimePickerDialog timePickerDialog = new TimePickerDialog(RegisterScreeningView.this, (view, hourOfDay, minute) -> {
                 selectedHour = hourOfDay;
                 selectedMinute = minute;
-                // Muestro la hora seleccionada en el nuevo EditText
                 screeningHourEditText.setText(String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute));
-                updateLegacyField(); // Actualizamos el campo antiguo
-            }, selectedHour, selectedMinute, true); // true para formato 24h
+                updateLegacyField();
+            }, selectedHour, selectedMinute, true);
             timePickerDialog.show();
         });
 
@@ -120,7 +109,6 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
             registerScreeningButton.setText(getString(R.string.tx_modificar));
             registerScreeningButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
 
-            // Relleno los campos normales
             EditText screeningTicketEditText = findViewById(R.id.screening_add_ticket);
             screeningTicketEditText.setText(String.valueOf(screening.getTicketPrice()));
             CheckBox subtitledCheckBox = findViewById(R.id.screening_add_subtitled);
@@ -130,7 +118,6 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
             EditText movieEditText = findViewById(R.id.screening_add_id_movie);
             movieEditText.setText(String.valueOf(screening.getMovieId()));
 
-            // --- CÓDIGO PARA RELLENAR FECHA Y HORA AL EDITAR ---
             try {
                 LocalDateTime dateTime = LocalDateTime.parse(screening.getScreeningTime());
                 selectedYear = dateTime.getYear();
@@ -143,11 +130,7 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(selectedYear, selectedMonth, selectedDay);
                 calendarView.setDate(calendar.getTimeInMillis(), true, true);
-
-                // Pongo la hora en el nuevo EditText
                 screeningHourEditText.setText(String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute));
-
-                // Actualizamos el campo antiguo también
                 updateLegacyField();
 
             } catch (Exception e) {
@@ -168,7 +151,6 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
         if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
             startActivity(intent);
-            //Con esto inicio la otra activity en el metodo oncreate
         } else if (item.getItemId() == R.id.action_preferences2){
             Intent intent = new Intent(this, PreferencesActivity.class);
             startActivity(intent);
@@ -176,12 +158,10 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
             Intent intent = new Intent(this, FavoriteListView.class);
             startActivity(intent);
         }
-        //En cualquier caso si he gestionado el caso devuelvo un true
         return true;
 
     }
 
-    // campo antiguo para pruebas, Legacy, al final lo voy a dejar, pero en una aplicacion final no estaria.
     private void updateLegacyField() {
         if (isDateSelected && screeningTimeEditTextLegacy != null) {
             String fullDateTimeString = String.format(Locale.ROOT, "%04d-%02d-%02dT%02d:%02d:00",
@@ -196,8 +176,6 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
             return;
         }
 
-        // --- LÓGICA PARA CONSTRUIR LA CADENA DE FECHA Y HORA ---
-        // Construyo la cadena a partir de nuestras variables, no del EditText antiguo
         String screeningTime = String.format(Locale.ROOT, "%04d-%02d-%02dT%02d:%02d:00",
                 selectedYear, selectedMonth + 1, selectedDay, selectedHour, selectedMinute);
 

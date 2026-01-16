@@ -17,17 +17,14 @@ public class ScreeningDetailModel implements ScreeningDetailContract.Model {
         callScreening.enqueue(new Callback<Screening>() {
             @Override
             public void onResponse(Call<Screening> call, Response<Screening> response) {
-                // Verificamos si la respuesta de la API es exitosa
                 if (response.isSuccessful()) {
                     Screening screening = response.body();
                     if (screening != null) {
                         listener.onLoadScreeningDetailSuccess(screening);
                     } else {
-                        // Si el cuerpo es nulo, significa que la película no se encontró
                         listener.onLoadScreeningDetailError("Sesion no encontrada.");
                     }
                 } else {
-                    // Si la respuesta no es exitosa, notificamos al Presenter
                     String errorMessage = "Error en la respuesta de la API: " + response.code();
                     listener.onLoadScreeningDetailError(errorMessage);
                 }
@@ -35,7 +32,6 @@ public class ScreeningDetailModel implements ScreeningDetailContract.Model {
 
             @Override
             public void onFailure(Call<Screening> call, Throwable t) {
-                // Si la llamada falla (ej. sin conexión a Internet), notificamos al Presenter
                 String errorMessage = "Error al conectar con la API: " + t.getMessage();
                 listener.onLoadScreeningDetailError(errorMessage);
             }
