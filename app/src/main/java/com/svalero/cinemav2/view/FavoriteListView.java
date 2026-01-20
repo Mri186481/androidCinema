@@ -66,7 +66,10 @@ public class FavoriteListView extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_list_screenings2) {
+        if (item.getItemId() == R.id.action_list_movies2) {
+            Intent intent = new Intent(this, MovieListView.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_preferences2){
