@@ -145,7 +145,16 @@ public class RegisterMovieView extends AppCompatActivity implements RegisterMovi
             String genre = genreEditText.getText().toString();
             //
             EditText durationMinutesEditText = findViewById((R.id.duration_minutes));
-            int durationMinutes = Integer.parseInt(durationMinutesEditText.getText().toString());
+            String durationText = durationMinutesEditText.getText().toString();
+            int durationMinutes = 0;
+            if (!durationText.isEmpty()) {
+                try {
+                    durationMinutes = Integer.parseInt(durationText);
+                } catch (NumberFormatException e) {
+                    durationMinutes = 0;
+                }
+            }
+
             EditText releaseDateEditText = findViewById((R.id.release_date));
             //
             String releaseDateText = releaseDateEditText.getText().toString();

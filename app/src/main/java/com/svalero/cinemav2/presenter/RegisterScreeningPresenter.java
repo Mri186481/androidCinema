@@ -23,6 +23,10 @@ public class RegisterScreeningPresenter implements RegisterScreeningContract.Pre
             view.showErrorMessage("El precio de la entrada tiene que ser mayor que 0");
             return;
         }
+        if (screeningin.getMovieId() <= 0) {
+            view.showErrorMessage("Debe de seleccionar un numero pelicula positivo");
+            return;
+        }
         if (screeningin.getRoomId() <= 0) {
             view.showErrorMessage("Debe de seleccionar un numero de sala positivo");
             return;
@@ -39,6 +43,14 @@ public class RegisterScreeningPresenter implements RegisterScreeningContract.Pre
 
         if (screeningIn.getTicketPrice() <= 0){
             view.showErrorMessage("El precio de la entrada tiene que ser mayor que 0");
+            return;
+        }
+        if (screeningIn.getMovieId() <= 0) {
+            view.showErrorMessage("Debe de seleccionar un numero de pelicula positivo");
+            return;
+        }
+        if (screeningIn.getRoomId() <= 0) {
+            view.showErrorMessage("Debe de seleccionar un numero de sala positivo");
             return;
         }
         model.updateScreening(screeningIn, this);

@@ -100,6 +100,10 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
 
         Intent intent = getIntent();
         SmovieId = intent.getLongExtra("screeningMovieId", 0);
+        EditText movieEditText = findViewById(R.id.screening_add_id_movie);
+        if (SmovieId != null && SmovieId > 0) {
+            movieEditText.setText(String.valueOf(SmovieId));
+        }
 
         // Lógica para modo ACTUALIZAR
         Screening screening = intent.getParcelableExtra("dataScreening");
@@ -115,7 +119,6 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
             subtitledCheckBox.setChecked(screening.isSubtitled());
             EditText roomEditText = findViewById(R.id.screening_add_id_room);
             roomEditText.setText(String.valueOf(screening.getRoomId()));
-            EditText movieEditText = findViewById(R.id.screening_add_id_movie);
             movieEditText.setText(String.valueOf(screening.getMovieId()));
 
             try {
@@ -184,15 +187,43 @@ public class RegisterScreeningView extends AppCompatActivity implements Register
 
         //
         EditText screeningTicketEditText = findViewById(R.id.screening_add_ticket);
-        double screeningTicket = Double.parseDouble(screeningTicketEditText.getText().toString());
+        String ticketText = screeningTicketEditText.getText().toString();
+        double screeningTicket = 0.0;
+        if (!ticketText.isEmpty()) {
+            try {
+                screeningTicket = Double.parseDouble(ticketText);
+            } catch (NumberFormatException e) {
+                screeningTicket = 0.0;
+            }
+        }
+        //
         CheckBox subtitledCheckBox = findViewById(R.id.screening_add_subtitled);
         boolean subtitled = subtitledCheckBox.isChecked();
+        //
         EditText roomEditText = findViewById(R.id.screening_add_id_room);
-        Long room = Long.parseLong(roomEditText.getText().toString());
-        Long RmovieId = SmovieId;
-        if (screeningId != -1) {
-            EditText movieEditText = findViewById(R.id.screening_add_id_movie);
-            RmovieId = Long.parseLong(movieEditText.getText().toString());
+        String roomText = roomEditText.getText().toString();
+        Long room = 0L;
+        if (!roomText.isEmpty()) {
+            try {
+                room = Long.parseLong(roomText);
+            } catch (NumberFormatException e) {
+                room = 0L;
+            }
+        }
+        //
+        EditText movieEditText = findViewById(R.id.screening_add_id_movie);
+        String movieText = movieEditText.getText().toString();
+        Long RmovieId = 0L;
+        if (!movieText.isEmpty()) {
+            try {
+                RmovieId = Long.parseLong(movieText);
+            } catch (NumberFormatException e) {
+                RmovieId = 0L;
+            }
+        }
+
+        if (RmovieId == 0 && SmovieId != null && SmovieId > 0) {
+            RmovieId = SmovieId;
         }
 
         ScreeningIn screeningIn = new ScreeningIn(screeningTime, screeningTicket, subtitled, RmovieId, room);
