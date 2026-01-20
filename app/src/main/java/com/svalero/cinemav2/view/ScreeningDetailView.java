@@ -75,7 +75,10 @@ public class ScreeningDetailView extends AppCompatActivity implements ScreeningD
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.action_list_screenings2) {
+        if (item.getItemId() == R.id.action_list_movies2) {
+            Intent intent = new Intent(this, MovieListView.class);
+            startActivity(intent);
+        } else if (item.getItemId() == R.id.action_list_screenings2) {
             Intent intent = new Intent(this, ScreeningListView.class);
             startActivity(intent);
             //Con esto inicio la otra activity en el metodo oncreate
